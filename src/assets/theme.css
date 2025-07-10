@@ -1,0 +1,116 @@
+/* src/assets/theme.css */
+
+/* 1. 定义颜色和设计变量 - Light & Dark Mode */
+:root {
+  /* ==================== 亮色模式变量 ==================== */
+  --primary-color: rgb(49, 174, 255);
+  --color-second: rgb(255, 78, 106);
+  --color-third: rgb(255, 185, 0);
+  --color-fourth: rgb(51, 213, 122);
+
+  --text-color: #4c4948;
+  --text-color-secondary: #7c7978;
+  --card-bg-color: rgba(255, 255, 255, 0.85); /* 稍微增加不透明度，让毛玻璃效果更明显 */
+  --border-color: #e4e7ed;
+
+  --card-shadow: 0 8px 16px -4px rgba(40, 40, 40, 0.1);
+  --border-radius-main: 16px;
+
+  /* 为亮色模式定义一个橙色悬停背景 */
+  --toggle-hover-bg: #ffb74d; /* 一个漂亮的柔和橙色 */
+
+  /* 亮色模式下，行内代码块的颜色 */
+  --code-bg-color: #f3f4f6; /* 一个柔和的浅灰色 */
+  --code-text-color: #e91e63; /* 可以保留原来的粉色 */
+}
+
+/* 当 <html> 有 .dark 类时，重写以上变量 */
+html.dark {
+  /* ==================== 暗色模式变量 ==================== */
+  --primary-color: rgb(49, 174, 255); /* 主题色可以保持不变，或选择一个更适合暗色的版本 */
+
+  /* 将文字颜色替换为柔和的灰白色，以保证可读性 */
+  --text-color: #c9d1d9;             /* 主文本 - 柔和灰白 */
+  --text-color-secondary: #8b949e;   /* 次要文本 - 中等灰色 */
+
+  --card-bg-color: rgba(22, 27, 34, 0.8); /* 暗色的毛玻璃效果 */
+  --border-color: #30363d;
+
+  --card-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.3);
+
+  /* 为暗色模式定义一个深蓝色悬停背景 */
+  --toggle-hover-bg: #3949ab; /* 一个生动的蓝色 */
+
+  /* 暗色模式下，行内代码块的颜色 */
+  --code-bg-color: rgba(255, 255, 255, 0.1); /* 半透明白色，能很好地融入深色背景 */
+  --code-text-color: #ff89b3; /* 一个更亮、更适合深色背景的粉色 */
+}
+
+/* ======================================================= */
+/* 2. 全局 Body 样式 与 双背景图核心逻辑                */
+/* ======================================================= */
+
+body {
+  background-color: #f0f2f5; /* 亮色模式下的基础底色 */
+  position: relative;
+  z-index: 1;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  /* 为 body 的颜色变化也添加过渡 */
+  transition: background-color 0.8s ease-in-out;
+}
+
+/* 暗黑模式下 body 的基础底色 */
+html.dark body {
+  background-color: #0d1117; /* GitHub 的暗黑模式背景色 */
+}
+
+/* 使用 ::before 和 ::after 分别作为背景层 */
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(0.5px);
+  /* 给透明度添加过渡效果 */
+  transition: opacity 0.8s ease-in-out;
+}
+
+/* 亮色模式背景层 (::before) */
+body::before {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)),
+    url('https://cdn.jsdelivr.net/gh/SelfLo06/MyImages@main/background.jpg');
+  opacity: 1; /* 默认可见 */
+}
+
+/* 暗色模式背景层 (::after) */
+body::after {
+  background-image:
+    /* 暗色模式的蒙版，可以是一个更深的半透明色 */
+    linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
+    url('https://cdn.jsdelivr.net/gh/SelfLo06/MyImages@main/background-dark.jpg');
+  opacity: 0; /* 默认不可见 */
+}
+
+/* 【魔法发生的地方】当 html.dark 时，让 ::before 淡出，::after 淡入 */
+html.dark body::before {
+  opacity: 0;
+}
+html.dark body::after {
+  opacity: 1;
+}
+
+
+/* 3. 你原有的内容容器  */
+.page-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
