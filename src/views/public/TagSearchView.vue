@@ -5,7 +5,7 @@
       <h1 class="page-title">标签检索</h1>
       <p class="page-subtitle">选择一个或多个标签，寻找它们的交集与灵感</p>
 
-      <!-- 【核心】标签选择器/搜索框 -->
+      <!-- 标签选择器/搜索框 -->
       <el-select
         v-model="selectedTagObjects"
         multiple
@@ -236,8 +236,6 @@ watch(() => route.query.tagIds, (newTagIds) => {
 
 
 <style scoped>
-/* TagSearchView.vue - 最终主题化样式 */
-
 /* 搜索头部卡片 */
 .search-header-card {
   background-color: var(--card-bg-color);
@@ -250,11 +248,9 @@ watch(() => route.query.tagIds, (newTagIds) => {
 .page-title {
   font-size: 2rem;
   margin-bottom: 0.5rem;
-  /* 【新增】明确颜色 */
   color: var(--text-color);
 }
 .page-subtitle {
-  /* 【修正】使用变量 */
   color: var(--text-color-secondary);
   margin-bottom: 1.5rem;
 }
@@ -275,7 +271,6 @@ watch(() => route.query.tagIds, (newTagIds) => {
   overflow: hidden;
   margin-top: 2rem;
   padding-top: 1.5rem;
-  /* 【修正】使用变量 */
   border-top: 1px solid var(--border-color);
   -webkit-mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
   mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
@@ -303,14 +298,12 @@ watch(() => route.query.tagIds, (newTagIds) => {
   display: flex;
   align-items: center;
   white-space: nowrap;
-  /* 【修正】采用 HomeView 标签的技巧 */
   background-color: rgba(128, 128, 128, 0.1);
   color: var(--text-color-secondary);
 }
 
 .tag-cloud-item:hover {
   background-color: var(--primary-color);
-  /* 【修正】使用变量 */
   color: var(--text-on-primary, white);
   transform: scale(1.1);
 }
@@ -322,15 +315,12 @@ watch(() => route.query.tagIds, (newTagIds) => {
 }
 
 /* --- 搜索结果区域 --- */
-/* 【语法修正】移除了 .search-results 的嵌套，所有样式都在顶层 */
-
 .article-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
 }
 
-/* 【样式修正】以下所有 article-card 相关样式均已完成主题化 */
 .article-card {
   background-color: var(--card-bg-color);
   border-radius: var(--border-radius-main);

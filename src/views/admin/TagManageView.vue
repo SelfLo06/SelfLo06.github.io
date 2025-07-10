@@ -39,7 +39,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
-// 假设你将要创建的API函数放在这里
 import { getAllTagsAdmin, addTagAdmin, updateTagAdmin, deleteTagAdmin } from '@/api/admin';
 
 // 表格数据

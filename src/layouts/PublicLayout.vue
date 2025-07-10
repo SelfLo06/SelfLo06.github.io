@@ -4,7 +4,6 @@
     <!-- 1. 左侧边栏 -->
     <aside class="sidebar-left">
       <!--
-        【核心修改】
         用我们刚创建的 LeftSidebar 组件替换掉占位符
       -->
       <LeftSidebar />
@@ -36,7 +35,6 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
-// 注意：我们暂时不再需要 RouterLink，因为导航将在侧边栏组件中实现
 import LeftSidebar from '@/components/LeftSidebar.vue';
 
 // 1. 创建一个 ref 来控制按钮的显示状态
@@ -65,7 +63,7 @@ onMounted(() => {
   window.addEventListener('scroll', handleScroll);
 });
 
-// 5. 【重要】在组件卸载时，移除事件监听，防止内存泄漏
+// 5. 在组件卸载时，移除事件监听，防止内存泄漏
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll);
 });
@@ -87,7 +85,6 @@ onUnmounted(() => {
   width: 260px; /* 固定宽度 */
   flex-shrink: 0; /* 防止在空间不足时被压缩 */
 
-  /* 【【【 核心新增代码 】】】 */
   /* 1. 声明为粘性定位 */
   position: sticky;
   /* 2. 当它滚动到距离视口顶部 2rem 的位置时，就固定住 */
@@ -111,7 +108,7 @@ onUnmounted(() => {
 
 
 
-/* 【关键修改】调整媒体查询断点并添加中等屏幕的处理 */
+/* 调整媒体查询断点并添加中等屏幕的处理 */
 @media (max-width: 1024px) {
   .sidebar-left {
     /* 在中等屏幕上取消 sticky 定位 */
@@ -133,7 +130,7 @@ onUnmounted(() => {
   }
 }
 
-/* 【新增】更精确的媒体查询 - 针对容器宽度不足的情况 */
+/* 更精确的媒体查询 - 针对容器宽度不足的情况 */
 @media (max-width: 900px) {
   .main-container {
     max-width: 100%;

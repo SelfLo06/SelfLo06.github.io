@@ -13,18 +13,13 @@ const instance = axios.create({
 // 客户端发送请求 -> [请求拦截器] -> 服务器
 instance.interceptors.request.use(
   config => {
-    // 在拦截器内部打印日志
-    //console.log("🚀 [Interceptor] 请求拦截器触发了！URL:", config.url);
-    // 在发送请求之前做些什么
     // 1. 从 localStorage 中获取 token
     const token = localStorage.getItem('Authorization');
 
     // 2. 如果 token 存在，则为请求头添加 Authorization 字段
     if (token) {
-      //console.log("🔑 [Interceptor] 发现Token，准备添加...");
       config.headers['Authorization'] = token;
     }
-    //else console.warn("⚠️ [Interceptor] 未发现Token。");
 
     return config; // 必须返回 config 对象
   },

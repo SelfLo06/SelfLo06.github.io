@@ -41,7 +41,7 @@ html.dark {
   /* 为暗色模式定义一个深蓝色悬停背景 */
   --toggle-hover-bg: #3949ab; /* 一个生动的蓝色 */
 
-  /* 【新增】暗色模式下，行内代码块的颜色 */
+  /* 暗色模式下，行内代码块的颜色 */
   --code-bg-color: rgba(255, 255, 255, 0.1); /* 半透明白色，能很好地融入深色背景 */
   --code-text-color: #ff89b3; /* 一个更亮、更适合深色背景的粉色 */
 }
@@ -55,16 +55,16 @@ body {
   position: relative;
   z-index: 1;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-  /* 【新增】为 body 的颜色变化也添加过渡 */
+  /* 为 body 的颜色变化也添加过渡 */
   transition: background-color 0.8s ease-in-out;
 }
 
-/* 【新增】暗黑模式下 body 的基础底色 */
+/* 暗黑模式下 body 的基础底色 */
 html.dark body {
   background-color: #0d1117; /* GitHub 的暗黑模式背景色 */
 }
 
-/* 【核心改造】使用 ::before 和 ::after 分别作为背景层 */
+/* 使用 ::before 和 ::after 分别作为背景层 */
 body::before,
 body::after {
   content: '';
@@ -78,7 +78,7 @@ body::after {
   background-position: center;
   background-repeat: no-repeat;
   filter: blur(0.5px);
-  /* 【动画核心】给透明度添加过渡效果 */
+  /* 给透明度添加过渡效果 */
   transition: opacity 0.8s ease-in-out;
 }
 
@@ -108,7 +108,7 @@ html.dark body::after {
 }
 
 
-/* 3. 你原有的内容容器 (保持不变) */
+/* 3. 你原有的内容容器  */
 .page-container {
   max-width: 900px;
   margin: 2rem auto;

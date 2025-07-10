@@ -29,7 +29,7 @@
         </select>
       </div>
 
-      <!-- ========== 【【【 新增：文章标签选择UI 】】】 ========== -->
+      <!-- ========== 【【【 文章标签选择UI 】】】 ========== -->
       <div class="form-item">
         <label for="tags">文章标签</label>
         <multiselect

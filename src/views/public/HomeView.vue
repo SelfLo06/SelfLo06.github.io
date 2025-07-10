@@ -4,17 +4,12 @@
   <div v-loading="loading">
     <!-- 当文章列表不为空时，显示文章网格 -->
     <div v-if="articleList.length > 0" class="article-grid">
-      <!--
-        【核心修改 1】
-        v-for 循环的目标从 mockArticleList 改回 articleList
-      -->
       <div v-for="article in articleList" :key="article.id" class="article-card">
         <RouterLink :to="{ name: 'articleDetail', params: { id: article.id } }" class="card-link">
 
           <!-- 1. 封面图区域 -->
           <div class="card-cover">
             <!--
-              【核心修改 2】
               - 使用 v-if 判断文章是否有封面图
               - 绑定真实的 article.coverImage
               - 提供一个优雅的“无封面”占位符
@@ -34,8 +29,6 @@
           <div class="card-body">
             <h2 class="card-title">{{ article.title }}</h2>
 
-            <!-- 【核心修改 3】使用真实的文章摘要 (summary) -->
-            <!-- 如果后端没提供摘要，可以先注释掉这行 -->
             <p class="card-summary">{{ article.summary || '暂无摘要...' }}</p>
 
             <div class="card-meta">
@@ -72,7 +65,7 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue';
-import { RouterLink, useRoute } from 'vue-router'; // 【1. 引入 useRoute 和 watch】
+import { RouterLink, useRoute } from 'vue-router';
 import { getPublishedArticles } from '@/api/public';
 
 // ========== 【【【 2. 接收 categoryId 作为 Prop 】】】 ==========
@@ -81,7 +74,7 @@ import { getPublishedArticles } from '@/api/public';
 const props = defineProps({
   categoryId: {
     type: String,
-    required: false // 设为 false，因为首页路由没有这个参数
+    required: false
   },
   tagId: {
     type: String,
@@ -119,7 +112,7 @@ const fetchArticles = async () => {
     }
 
     // 调用API，传入我们构造好的参数
-    const res = await getPublishedArticles(params); // 【重要】现在传入的是包含可选 categoryId 的 params
+    const res = await getPublishedArticles(params);
 
     if (res.code === 0 && res.data && Array.isArray(res.data.records)) {
       articleList.value = res.data.records;

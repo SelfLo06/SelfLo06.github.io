@@ -7,7 +7,7 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     // ===============================================
-    // 1. 前台展示路由 (应用了公共布局)
+    // 1. 前台展示路由
     // ===============================================
     {
       path: '/',
@@ -28,7 +28,6 @@ const router = createRouter({
           component: () => import('../views/public/ArticleDetailView.vue'),
           props: true // 同样建议开启 props，方便组件获取 id
         },
-        // 【【【 新增的路由规则 】】】
         {
           path: 'categories', // 访问 /categories 时匹配
           name: 'categories',
@@ -39,7 +38,7 @@ const router = createRouter({
           // 路径中包含一个动态参数 categoryId
           path: 'category/:categoryId/articles',
           name: 'category-articles',
-          // 【核心】复用 HomeView 组件来展示文章列表
+          // 复用 HomeView 组件来展示文章列表
           component: () => import('../views/public/HomeView.vue'),
           // 【推荐】开启 props，这样 Vue Router 会自动将 categoryId 作为 prop 传递给 HomeView
           props: true
@@ -82,7 +81,6 @@ const router = createRouter({
       name: 'login',
       component: () => import('../views/admin/LoginView.vue')
     },
-    // 【核心修改】
     // 我们将原有的 /admin 路由对象，修改为使用 AdminLayout 的布局路由
     {
       path: '/admin',

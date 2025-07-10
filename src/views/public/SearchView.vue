@@ -1,18 +1,14 @@
  <!-- 使用 v-loading 指令，在加载时显示Element Plus的加载动画 -->
+ <template>
   <div v-loading="loading">
     <!-- 当文章列表不为空时，显示文章网格 -->
     <div v-if="articleList.length > 0" class="article-grid">
-      <!--
-        【核心修改 1】
-        v-for 循环的目标从 mockArticleList 改回 articleList
-      -->
       <div v-for="article in articleList" :key="article.id" class="article-card">
         <RouterLink :to="{ name: 'articleDetail', params: { id: article.id } }" class="card-link">
 
           <!-- 1. 封面图区域 -->
           <div class="card-cover">
             <!--
-              【核心修改 2】
               - 使用 v-if 判断文章是否有封面图
               - 绑定真实的 article.coverImage
               - 提供一个优雅的“无封面”占位符
@@ -32,8 +28,6 @@
           <div class="card-body">
             <h2 class="card-title">{{ article.title }}</h2>
 
-            <!-- 【核心修改 3】使用真实的文章摘要 (summary) -->
-            <!-- 如果后端没提供摘要，可以先注释掉这行 -->
             <p class="card-summary">{{ article.summary || '暂无摘要...' }}</p>
 
             <div class="card-meta">
@@ -64,17 +58,12 @@
 
 <script setup>
 
-import { ref, onMounted, watch } from 'vue';
-// 【1. 导入 useRoute 来访问路由信息】
+import { ref, watch } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
-// 【2. 导入新的搜索API，并重命名，防止与旧函数混淆】
-//    确保你已经在 api/public.js 中定义了这个函数
 import { searchArticles as searchArticlesApi } from '@/api/public';
 
-// 【3. 获取 route 实例】
 const route = useRoute();
 
-// --- 以下大部分 ref 保持不变 ---
 const articleList = ref([]);
 const pagination = ref({
   pageNum: 1,
@@ -82,11 +71,9 @@ const pagination = ref({
   total: 0
 });
 const loading = ref(true);
-// 【4. 新增一个 ref 来存储当前的搜索关键词】
 const currentKeyword = ref('');
 
 
-// --- 【5. 核心改造：重写数据获取函数】 ---
 const fetchSearchResults = async () => {
   // 从当前的路由 query 中获取关键词
   const keyword = route.query.keyword;
@@ -108,7 +95,6 @@ const fetchSearchResults = async () => {
       pageSize: pagination.value.pageSize,
     };
 
-    // 调用新的搜索API
     const res = await searchArticlesApi(params);
 
     if (res.code === 0 && res.data && Array.isArray(res.data.records)) {
@@ -140,7 +126,6 @@ const formatDate = (isoString) => {
   return isoString.split('T')[0];
 };
 
-// --- 【6. 修改 Watcher，监听路由 query 的变化】 ---
 // 当用户在搜索页的搜索框进行一次新的搜索时，URL的query会变
 watch(
   () => route.query.keyword,
@@ -155,7 +140,6 @@ watch(
 </script>
 
  <style scoped>
- /* SearchView.vue - 最终主题化样式 */
 
  .article-card {
    background-color: var(--card-bg-color);
@@ -170,7 +154,7 @@ watch(
 
  .article-card:hover {
    transform: translateY(-5px);
-   /* 【修正】与 HomeView 保持一致的悬浮阴影 */
+   /* 与 HomeView 保持一致的悬浮阴影 */
    box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.15);
  }
 
@@ -182,7 +166,7 @@ watch(
  .card-cover {
    height: 200px;
    width: 100%;
-   /* 【修正】使用变量作为占位背景 */
+   /* 使用变量作为占位背景 */
    background-color: var(--border-color);
  }
 
@@ -202,11 +186,11 @@ watch(
    font-size: 5rem;
    font-weight: bold;
    color: var(--primary-color);
-   /* 【修正】采纳 HomeView 的核心技巧：默认背景为卡片背景 */
+   /* 采纳 HomeView 的核心技巧：默认背景为卡片背景 */
    background-color: var(--card-bg-color);
    transition: background-color 0.3s ease;
  }
- /* 【修正】为暗黑模式下的占位符提供不同背景 */
+ /* 为暗黑模式下的占位符提供不同背景 */
  :global(html.dark) .cover-placeholder {
    background-color: var(--border-color);
  }
@@ -222,7 +206,6 @@ watch(
    margin: 0 0 0.75rem 0;
    font-size: 1.3rem;
    font-weight: 600;
-   /* 【修正】确保使用变量 */
    color: var(--text-color);
  }
 
@@ -236,7 +219,6 @@ watch(
    text-overflow: ellipsis;
    flex-grow: 1;
    margin-bottom: 1rem;
-   /* 【修正】使用次要文本颜色变量 */
    color: var(--text-color-secondary);
  }
 
@@ -248,7 +230,6 @@ watch(
    font-size: 0.85rem;
    padding-top: 1rem;
    margin-top: auto;
-   /* 【修正】使用变量 */
    color: var(--text-color-secondary);
    border-top: 1px solid var(--border-color);
  }

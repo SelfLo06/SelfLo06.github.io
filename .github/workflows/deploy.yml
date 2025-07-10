@@ -1,0 +1,58 @@
+# 自动化流程名称
+name: Build and Deploy Vue to GitHub Pages
+
+# 触发条件：当有代码 push 到 main 分支时，自动运行此流程
+on:
+  push:
+    branches:
+      - main
+
+# 权限设置：允许此流程向你的仓库 gh-pages 分支写入内容
+permissions:
+  contents: write
+
+# 任务列表：这里定义了机器人需要做的工作
+jobs:
+  build-and-deploy:
+    # 运行环境：使用最新版的 Ubuntu 虚拟机
+    runs-on: ubuntu-latest
+
+    # 步骤列表：按顺序执行以下步骤
+    steps:
+      # 第一步：检出代码
+      # 把你的仓库代码下载到虚拟机里
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
+
+      # 第二步：安装 Node.js
+      # 因为打包 Vue 项目需要 Node.js 环境
+      - name: Setup Node.js 🟩
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18' # 使用 Node.js 18 版本
+
+      # 第三步：安装项目依赖
+      # 相当于在虚拟机里运行 npm install
+      - name: Install dependencies 📦
+        run: npm install
+
+      # 第四步：创建生产环境的 .env 文件
+      # 这是关键一步！我们不能把生产环境的 URL 写在代码里
+      # ${{ secrets.VUE_APP_API_URL }} 会去读取你在 GitHub 仓库里设置的安全密钥
+      - name: Create .env.production file 🤫
+        run: echo "VUE_APP_API_BASE_URL=${{ secrets.VUE_APP_API_URL }}" > .env.production
+
+      # 第五步：打包构建项目
+      # 相当于在虚拟机里运行 npm run build，会生成 dist 文件夹
+      - name: Build project 🏗️
+        run: npm run build
+
+      # 第六步：部署到 GitHub Pages
+      # 使用一个社区里非常流行的 Action 来处理部署的复杂细节
+      - name: Deploy to GitHub Pages 🚀
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          # deploy_key 是另一个安全密钥，允许这个 Action 向你的仓库推送内容
+          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          # 要发布哪个文件夹里的内容
+          publish_dir: ./dist

@@ -186,7 +186,7 @@ const handleLogout = () => {
   font-size: 1.1em;
 }
 
-/* 【新增】为退出登录按钮特别指定颜色 */
+/* 为退出登录按钮特别指定颜色 */
 .logout-btn {
   color: #f56c6c; /* Element Plus 的危险红色 */
 }

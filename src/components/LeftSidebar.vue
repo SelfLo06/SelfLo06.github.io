@@ -4,7 +4,6 @@
     <!-- 1. 个人信息卡片 -->
     <div class="card profile-card">
       <div class="avatar-container">
-        <!-- 直接使用我们从配置文件中得到的头像URL -->
         <img src="https://cdn.jsdelivr.net/gh/SelfLo06/MyImages@main/profile.jpg" alt="User Avatar" class="avatar-img">
       </div>
       <h2 class="nickname">selflo</h2>
@@ -87,16 +86,15 @@ import ThemeToggle from './ThemeToggle.vue';
 
 // --- 使用静态数据来驱动组件 ---
 
-// 导航菜单数据 (源自配置文件)
+// 导航菜单数据
 const navMenu = ref([
-  // 【核心修改】将 class 名称改为 Font Awesome 的标准名称
   { name: '回到首页', path: '/', icon: 'fa-solid fa-house' },
   { name: '文章分类', path: '/categories', icon: 'fa-solid fa-folder-open' },
   { name: '关于本人', path: '/about', icon: 'fa-solid fa-user' },
  // { name: '我的朋友', path: '/friends', icon: 'fa-solid fa-users' }
 ]);
 
-// 社交链接数据 (源自配置文件)
+// 社交链接数据
 const socialLinks = ref([
   { name: 'QQ', url: 'tencent://AddContact/?fromId=45&fromSubId=1&subcmd=all&uin=3505295092', icon: 'fa-brands fa-qq', className: 'social-qq' },
   { name: '哔哩哔哩', url: 'https://space.bilibili.com/365240798', icon: 'fa-brands fa-bilibili', className: 'social-bilibili' },
@@ -132,7 +130,7 @@ const performSearch = () => {
     return;
   }
 
-  // 【核心】使用 router.push() 进行程序化导航
+  // 使用 router.push() 进行程序化导航
   // 我们将跳转到一个新的 "search" 路由，并通过 query 参数传递关键词
   router.push({
     name: 'search', // 我们稍后会在 router/index.js 中定义这个命名的路由

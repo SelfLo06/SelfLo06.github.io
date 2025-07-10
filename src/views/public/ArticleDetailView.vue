@@ -74,7 +74,7 @@
 import { ref, computed, onMounted, watch, nextTick} from 'vue';
 //import { useRoute } from 'vue-router';
 import { getArticleDetailById } from '@/api/public';
-import { useThemeStore } from '@/stores/theme'; //  导入 theme store
+import { useThemeStore } from '@/stores/theme';
 
 
 // 引入 markdown 渲染和代码高亮库
@@ -94,7 +94,6 @@ const props = defineProps({
 
 const themeStore = useThemeStore(); // 获取 theme store 实例
 
-//const route = useRoute(); // 仍然需要 route 来监听变化
 const article = ref(null);
 const loading = ref(true);
 
@@ -109,7 +108,7 @@ marked.setOptions({
   gfm: true,
   // 优化换行符处理
   breaks: true,
-  // 【核心】代码高亮配置
+  // 代码高亮配置
   highlight: function(code, lang) {
     const language = hljs.getLanguage(lang) ? lang : 'plaintext';
     return hljs.highlight(code, { language }).value;
@@ -200,19 +199,17 @@ const fetchArticleDetail = async (articleId) => {
   article.value = null; // 重置文章数据
   try {
     const res = await getArticleDetailById(articleId);
-    // 【后端逻辑适配】如果后端对草稿文章做了访问控制，这里可能会返回失败
     if (res.code === 0 && res.data) {
-      // 【关键逻辑】只展示已发布的文章
+      // 只展示已发布的文章
       if (res.data.status === 0) {
         article.value = res.data;
         document.title = `${article.value.title} - selflo's Blog`; // 更新页面标题
 
-        // 【整合】在获取文章数据并确认渲染后，再处理DOM相关的操作
+        // 在获取文章数据并确认渲染后，再处理DOM相关的操作
         await nextTick(); // 等待DOM更新
         addCopyButtons();  // 添加复制代码按钮
       } else {
         console.warn('尝试访问一篇草稿文章，已阻止渲染。');
-        // article.value 保持为 null，页面将显示 "文章不存在"
       }
     } else {
       console.error('获取文章详情失败:', res.message);
@@ -224,7 +221,7 @@ const fetchArticleDetail = async (articleId) => {
   }
 };
 
-// 格式化日期 (简易版)
+// 格式化日期
 const formatDate = (isoString) => {
   if (!isoString) return '';
   return isoString.split('T')[0];
@@ -319,7 +316,6 @@ watch(() => themeStore.theme, (newTheme) => {
   font-size: 0.9em;
 }
 
-/* 这部分彩色标签可以保持原样，它们作为点缀色在暗黑模式下也很好看 */
 .tag-date { background-color: #e6f7ff; color: #1890ff; }
 .tag-date:hover { background-color: #bae7ff; }
 .tag-words { background-color: #ffeef2; color: #fb7299; }
@@ -327,7 +323,7 @@ watch(() => themeStore.theme, (newTheme) => {
 .tag-category { background-color: #fffbe6; color: #faad14; }
 .tag-category:hover { background-color: #fff1b8; }
 
-/* 【修改】为普通标签适配主题 */
+/* 为普通标签适配主题 */
 .tag-item {
   background-color: rgba(128, 128, 128, 0.1);
   color: var(--text-color-secondary);
@@ -339,7 +335,7 @@ watch(() => themeStore.theme, (newTheme) => {
 
 
 /* ======================================================= */
-/* 【核心修改】为 Markdown 内容全面应用 CSS 变量          */
+/* 为 Markdown 内容全面应用 CSS 变量          */
 /* ======================================================= */
 .markdown-content :deep(h1),
 .markdown-content :deep(h2),

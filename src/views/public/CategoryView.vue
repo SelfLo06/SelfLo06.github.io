@@ -43,7 +43,6 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-// 假设你将新的API函数放在这里
 import { getCategoryDetails } from '@/api/public';
 
 const categoryList = ref([]);
@@ -51,7 +50,7 @@ const loading = ref(true);
 
 onMounted(async () => {
   try {
-    const res = await getCategoryDetails(); // 调用我们新的API函数
+    const res = await getCategoryDetails();
     if (res.code === 0) {
       categoryList.value = res.data;
     }
@@ -104,14 +103,12 @@ onMounted(async () => {
 }
 .category-card:hover {
   transform: translateY(-5px);
-  /* 【修正 1】采用 HomeView 的阴影风格，不再需要新变量 */
   box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.15);
 }
 
 .card-image {
   width: 35%;
   flex-shrink: 0;
-  /* 【修正 2】直接复用 HomeView 的做法，使用 --border-color 作为占位背景 */
   background-color: var(--border-color);
 }
 
@@ -131,12 +128,10 @@ onMounted(async () => {
   font-size: 5rem;
   font-weight: bold;
   color: var(--primary-color);
-  /* 【修正 3】采纳 HomeView 的核心技巧：默认背景为卡片背景 */
   background-color: var(--card-bg-color);
   user-select: none;
   transition: background-color 0.3s ease; /* 添加过渡效果 */
 }
-/* 【修正 3.1】使用 :global 选择器，为暗黑模式下的占位符提供不同背景，增强对比度 */
 :global(html.dark) .cover-placeholder {
   background-color: var(--border-color);
 }
@@ -188,7 +183,6 @@ onMounted(async () => {
 }
 .view-button:hover {
   background-color: var(--primary-color);
-  /* 【修正 4】将 hardcode 的 white 换成变量，并提供备用值 */
   color: var(--text-on-primary, white);
 }
 </style>

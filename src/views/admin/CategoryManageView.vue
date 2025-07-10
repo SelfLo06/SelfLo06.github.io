@@ -13,9 +13,9 @@
     <el-table :data="categoryList" v-loading="loading" style="width: 100%">
       <el-table-column prop="id" label="ID" width="100"></el-table-column>
       <el-table-column prop="name" label="分类名称"></el-table-column>
-      <!-- 新增：显示描述 -->
+      <!-- 显示描述 -->
       <el-table-column prop="description" label="描述" show-overflow-tooltip></el-table-column>
-      <!-- 新增：以图片形式预览封面图 -->
+      <!-- 以图片形式预览封面图 -->
       <el-table-column label="封面图预览" width="150">
         <template #default="{ row }">
           <el-image
@@ -45,11 +45,11 @@
       <el-form-item label="分类名称" prop="name">
         <el-input v-model="formModel.name" placeholder="请输入分类名称"></el-input>
       </el-form-item>
-      <!-- 新增：描述输入框 -->
+      <!-- 描述输入框 -->
       <el-form-item label="分类描述" prop="description">
         <el-input v-model="formModel.description" type="textarea" placeholder="请输入分类的简短描述"></el-input>
       </el-form-item>
-      <!-- 新增：封面图URL输入框 -->
+      <!-- 封面图URL输入框 -->
       <el-form-item label="封面图URL" prop="coverImage">
         <el-input v-model="formModel.coverImage" placeholder="请输入图片的网络地址"></el-input>
       </el-form-item>

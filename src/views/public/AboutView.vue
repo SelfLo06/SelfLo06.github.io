@@ -14,7 +14,6 @@ import { ref, computed } from 'vue';
 import { marked } from 'marked';
 import PageHeader from '@/components/PageHeader.vue';
 
-// 将所有文案内容作为响应式的 Markdown 字符串存放在 script 中
 const aboutContentMd = ref(`
 Hiii, 我是 selflo，一名来自**南京大学智能软件**的大一学生！ (^▽^)
 
@@ -36,7 +35,6 @@ const aboutContentHtml = computed(() => {
 </script>
 
 <style scoped>
-/* 如果你的 PageHeader.vue 组件内部需要它，请保留 */
 .page-title {
   font-size: 2.2rem;
   font-weight: 600;
@@ -61,7 +59,6 @@ const aboutContentHtml = computed(() => {
 .content :deep(p) {
   font-size: 1.05rem;
   line-height: 1.8;
-  /* 【修复】使用主文本颜色变量 */
   color: var(--text-color);
   margin-bottom: 1.2rem;
 }
@@ -71,9 +68,7 @@ const aboutContentHtml = computed(() => {
   font-weight: 600;
 }
 
-/* 为 code 标签也加上样式 */
 .content :deep(code) {
-  /* 【修复】使用新的CSS变量 */
   background-color: var(--code-bg-color);
   color: var(--code-text-color);
   padding: 0.2rem 0.4rem;

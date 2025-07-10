@@ -6,14 +6,12 @@ import request from '@/utils/request.js';
 // --- 数据绑定 ---
 const username = ref('');
 const password = ref('');
-// 【新增】用于绑定站点密码的 ref
+// 用于绑定站点密码的 ref
 const secretKey = ref('');
 const errorMessage = ref('');
 const router = useRouter();
 
-// 【新增】从环境变量中获取你的站点密码
-// 重要：请在项目根目录创建 .env.local 文件，并添加一行：
-// VITE_APP_ADMIN_SECRET_KEY=你的超级密码
+// 从环境变量中获取站点密码
 const correctSecretKey = import.meta.env.VITE_APP_ADMIN_SECRET_KEY;
 
 const handleLogin = async () => {
@@ -25,7 +23,7 @@ const handleLogin = async () => {
     return;
   }
 
-  // --- 【核心】站点密码校验 ---
+  // --- 站点密码校验 ---
   if (secretKey.value !== correctSecretKey) {
     errorMessage.value = '站点密码错误！';
     return;

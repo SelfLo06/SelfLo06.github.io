@@ -10,9 +10,9 @@
       </el-button>
     </div>
 
-    <!-- 2. 【升级】筛选与搜索区域 -->
+    <!-- 2. 筛选与搜索区域 -->
     <div class="table-filters">
-      <!-- 【新增】关键词搜索框 -->
+      <!-- 关键词搜索框 -->
       <el-input
         v-model="filters.keyword"
         placeholder="请输入标题关键词"
@@ -50,12 +50,12 @@
       <el-button @click="handleReset">重置</el-button>
     </div>
 
-    <!-- 3. 【升级】文章数据表格 -->
+    <!-- 3. 文章数据表格 -->
     <el-table :data="articleList" v-loading="loading" style="width: 100%">
       <el-table-column prop="id" label="ID" width="80" />
       <el-table-column prop="title" label="文章标题" show-overflow-tooltip />
 
-      <!-- 【新增】标签列 -->
+      <!-- 标签列 -->
       <el-table-column label="标签" width="200">
         <template #default="{ row }">
           <div v-if="row.tags && row.tags.length">
@@ -90,7 +90,7 @@
       </el-table-column>
     </el-table>
 
-    <!-- 4. 【升级】分页组件 -->
+    <!-- 4. 分页组件 -->
     <div class="pagination-container">
       <el-pagination
         background
@@ -109,7 +109,6 @@
 import { ref, reactive, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { ElMessage, ElMessageBox } from 'element-plus';
-// 【重要】我们假设你有一个统一的后台搜索API
 import { deleteArticleById, getAllCategories, getAdminArticles } from '@/api/admin'
 
 const router = useRouter();
@@ -120,9 +119,9 @@ const loading = ref(true);
 const pagination = ref({ pageNum: 1, pageSize: 10, total: 0 });
 const categoryOptions = ref([]);
 
-// 【升级】使用 reactive 来统一管理所有筛选条件
+// 使用 reactive 来统一管理所有筛选条件
 const filters = reactive({
-  keyword: '', // 【新增】关键词
+  keyword: '', // 关键词
   categoryId: '',
   status: ''
 });
@@ -132,21 +131,21 @@ const fetchData = async () => {
   loading.value = true;
   try {
     const params = {
-      // 【修正】确保分页参数名与后端匹配
+      // 确保分页参数名与后端匹配
       page: pagination.value.pageNum,
       pageSize: pagination.value.pageSize,
-      // 【修正】确保筛选参数名与后端匹配 (title, categoryId, status)
+      // 确保筛选参数名与后端匹配 (title, categoryId, status)
       title: filters.keyword, // 将前端的 keyword 映射为后端的 title
       categoryId: filters.categoryId,
       status: filters.status
     };
 
-    // 【修正】统一调用 getAdminArticles
+    // 统一调用 getAdminArticles
     const res = await getAdminArticles(params);
 
     articleList.value = res.data.records;
     pagination.value.total = res.data.total;
-    // 【修正】更新分页数据时，也使用后端返回的字段名
+    // 更新分页数据时，也使用后端返回的字段名
     pagination.value.pageNum = res.data.current;
   } catch (error) {
     console.error("获取文章列表失败:", error);
@@ -196,7 +195,6 @@ const handleDelete = async (id) => {
   }
 };
 
-// 【升级】搜索和重置逻辑现在更简单
 const handleSearch = () => {
   pagination.value.pageNum = 1; // 搜索时回到第一页
   fetchData();
@@ -227,10 +225,6 @@ const formatStatus = (status) => {
 </script>
 
 <style scoped>
-/*
-  这些样式与我之前提供的“升级版”代码完全一致，
-  它们能很好地适应新的 Element Plus 组件。
-*/
 .table-header {
   display: flex;
   justify-content: space-between;
