@@ -3,30 +3,56 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import request from '@/utils/request.js';
 
+// --- 数据绑定 ---
 const username = ref('');
 const password = ref('');
+// 【新增】用于绑定站点密码的 ref
+const secretKey = ref('');
 const errorMessage = ref('');
 const router = useRouter();
 
+// 【新增】从环境变量中获取你的站点密码
+// 重要：请在项目根目录创建 .env.local 文件，并添加一行：
+// VITE_APP_ADMIN_SECRET_KEY=你的超级密码
+const correctSecretKey = import.meta.env.VITE_APP_ADMIN_SECRET_KEY;
+
 const handleLogin = async () => {
   errorMessage.value = '';
-  if (!username.value || !password.value) {
-    errorMessage.value = '用户名和密码都不能为空';
+
+  // --- 前端校验 ---
+  if (!username.value || !password.value || !secretKey.value) {
+    errorMessage.value = '用户名、密码和站点密码都不能为空';
     return;
   }
 
+  // --- 【核心】站点密码校验 ---
+  if (secretKey.value !== correctSecretKey) {
+    errorMessage.value = '站点密码错误！';
+    return;
+  }
+
+  // --- 后端 API 请求 ---
   try {
     const response = await request.post('/user/login', {
       username: username.value,
       password: password.value
     });
 
-    const token = response.data;
-    localStorage.setItem('Authorization', token);
-    alert('登录成功！');
-    router.push({ name: 'admin-dashboard' });
+    // 假设后端成功返回 code: 0 和 data: "token_string"
+    if (response.code === 0 && response.data) {
+      const token = response.data;
+      // 将 Token 存入 localStorage
+      localStorage.setItem('Authorization', token);
+      alert('登录成功！');
+      // 跳转到后台文章管理页
+      router.push({ name: 'admin-articles' });
+    } else {
+      // 处理后端返回的业务错误
+      errorMessage.value = response.message || '用户名或密码不正确';
+    }
 
   } catch (error) {
+    // 处理网络或服务器级别的错误
     errorMessage.value = error.message || '服务连接失败，请稍后再试。';
     console.error("登录失败:", error);
   }
@@ -44,6 +70,10 @@ const handleLogin = async () => {
       <div class="form-group">
         <label for="password">密码</label>
         <input type="password" id="password" v-model="password" placeholder="请输入密码">
+      </div>
+      <div class="form-group">
+        <label for="secretKey">站点密码</label>
+        <input type="password" id="secretKey" v-model="secretKey" placeholder="请输入站点密码">
       </div>
       <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
       <button type="submit">登 录</button>

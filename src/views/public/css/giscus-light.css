@@ -1,0 +1,9 @@
+/* public/css/giscus-light.css */
+:root {
+  --giscus-body-background: transparent;
+  --giscus-main-border-color: #e4e7ed;
+  --giscus-input-border-color: #e4e7ed;
+  --giscus-primary-text-color: #4c4948; /* 亮色模式下的深色文字 */
+  --giscus-secondary-text-color: #7c7978;
+  --giscus-border-radius: 12px;
+}
