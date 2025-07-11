@@ -4,7 +4,7 @@
     <!-- 1. 个人信息卡片 -->
     <div class="card profile-card">
       <div class="avatar-container">
-        <img src="https://cdn.jsdelivr.net/gh/SelfLo06/MyImages@main/profile.jpg" alt="User Avatar" class="avatar-img">
+        <img src="https://images.selflo06.xyz//profile.jpg" alt="User Avatar" class="avatar-img">
       </div>
       <h2 class="nickname">selflo</h2>
       <p class="motto">Stay hungry, stay foolish.</p>
