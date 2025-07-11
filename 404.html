@@ -1,0 +1,24 @@
+<!-- public/404.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Redirecting...</title>
+  <script>
+    // 捕获用户原本想去的路径 (例如 /admin 或 /article/123)
+    // 并将其存储在 sessionStorage 中。
+    // location.pathname 是路径，location.search 是 ? 后面的查询参数。
+    sessionStorage.redirect = location.pathname + location.search;
+  </script>
+  <!--
+    【魔法核心】
+    立即执行一次 "meta refresh" 重定向。
+    它告诉浏览器：“不要停留在这个页面，马上跳转到网站的根目录 /”。
+    我们的 Vue 应用正是在根目录的 index.html 中等待着。
+  -->
+  <meta http-equiv="refresh" content="0;URL='/'"></meta>
+</head>
+<body>
+<!-- 这个页面会一闪而过，所以 body 里什么都不需要 -->
+</body>
+</html>
