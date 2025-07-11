@@ -1,22 +1,14 @@
-<!-- /public/404.html -->
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <title>Redirecting...</title>
   <script>
-    // 1. 把用户想访问的路径（比如 /admin）存到 sessionStorage 里
-    sessionStorage.setItem('redirectPath', window.location.pathname);
-
-    // 2. 立刻把浏览器重定向到网站的根目录
-    window.location.replace(
-      // 这会拼接出你的主页地址，比如 https://selflo06.xyz/
-      window.location.protocol + '//' + window.location.host
-    );
+    // 只存储完整的路径和查询参数，不做任何处理
+    sessionStorage.redirect = location.pathname + location.search;
   </script>
+  <!-- 重定向到根目录，让 Vue App 来处理 -->
+  <meta http-equiv="refresh" content="0;URL='/'"></meta>
 </head>
-<body>
-<!-- 如果脚本执行失败，用户会看到这个提示 -->
-<p>If you are not redirected automatically, follow this <a href="/">link to the homepage</a>.</p>
-</body>
+<body></body>
 </html>

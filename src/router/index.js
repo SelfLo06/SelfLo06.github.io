@@ -163,17 +163,30 @@ router.beforeEach((to, from, next) => {
   }
 });
 
-// 在 router 实例创建之后，导出之前
+router.isReady().then(() => {
+  const redirectPath = sessionStorage.getItem('redirect');
 
-// 检查 sessionStorage 中是否有我们存下的重定向路径
-const redirectPath = sessionStorage.getItem('redirectPath');
+  if (redirectPath) {
+    sessionStorage.removeItem('redirect');
 
-// 如果有路径
-if (redirectPath) {
-  // 用完之后就立刻删掉，防止下次刷新时重复跳转
-  sessionStorage.removeItem('redirectPath');
-  // 使用 router.replace() 在客户端无刷新地跳转到用户本来想去的路径
-  router.replace(redirectPath);
-}
+    // 【核心修改】
+    // 我们不再直接 router.replace(redirectPath)，
+    // 因为 redirectPath 可能是 '/selflo-blog/admin'
+    // 而 Vue Router 内部期望的是 '/admin' (它会自动加上 base)
+    // 所以我们先计算出正确的相对路径。
 
+    const base = import.meta.env.BASE_URL; // 获取 vite.config.js 中定义的 base，例如 '/'
+    let relativePath = redirectPath;
+
+    // 如果 base 不是根目录 '/'，并且 sessionStorage 里的路径以 base 开头
+    // 我们就把它截掉，得到正确的相对路径。
+    // (对于你的自定义域名，base 是 '/'，这个 if 不会执行，但这是个好习惯)
+    if (base !== '/' && relativePath.startsWith(base)) {
+      relativePath = relativePath.substring(base.length);
+    }
+
+    // 使用这个绝对安全的相对路径进行跳转
+    router.replace(relativePath);
+  }
+});
 export default router;
