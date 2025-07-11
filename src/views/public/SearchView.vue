@@ -264,41 +264,11 @@ watch(
    margin-top: 2rem;
  }
 
- /* 暗夜模式下的 el-pagination 样式优化 */
- :global(html.dark) .el-pagination {
-   --el-pagination-bg-color: var(--card-bg-color);
-   --el-pagination-text-color: var(--text-color);
-   --el-pagination-border-color: var(--border-color);
+ :global(html.dark) .search-view :deep(.el-empty__image svg) { /* 假设根元素 class 为 search-view */
+   filter: invert(95%) sepia(6%) saturate(250%) hue-rotate(180deg) brightness(65%) contrast(85%);
  }
 
- :global(html.dark) .el-pagination .btn-prev,
- :global(html.dark) .el-pagination .btn-next,
- :global(html.dark) .el-pagination .el-pager li {
-   background-color: var(--card-bg-color);
-   color: var(--text-color);
-   border: 1px solid var(--border-color);
- }
-
- :global(html.dark) .el-pagination .el-pager li:hover {
-   color: var(--primary-color);
- }
-
- :global(html.dark) .el-pagination .el-pager li.is-active {
-   background-color: var(--primary-color);
-   color: white;
- }
-
- /* 暗夜模式下的 el-empty 样式优化 */
- :global(html.dark) .el-empty__image svg {
-   fill: #6b7280; /* 图标变为灰色 */
- }
-
- :global(html.dark) .el-empty__description p {
-   color: #d1d5db !important; /* 文字变为柔和的白色，不刺眼 */
- }
-
- /* 如果需要调整图标大小或透明度 */
- :global(html.dark) .el-empty__image {
-   opacity: 0.8;
+ :global(html.dark) .search-view :deep(.el-empty__description p) {
+   color: var(--text-color-secondary);
  }
  </style>
