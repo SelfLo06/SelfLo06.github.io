@@ -1,0 +1,1 @@
+import{X as e}from"./index-CuV7Od1q.js";const n=t=>e.get("/article",{params:t}),s=t=>e.delete(`/article/${t}`),g=()=>e.get("/category"),c=t=>e.post("/tag",t),d=(t,a)=>e.put(`/tag/${t}`,a),o=t=>e.delete(`/tag/${t}`),i=()=>e.get("/tags");export{g as a,i as b,o as c,s as d,c as e,n as g,d as u};
