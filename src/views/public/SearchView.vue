@@ -287,4 +287,18 @@ watch(
    background-color: var(--primary-color);
    color: white;
  }
+
+ /* 暗夜模式下的 el-empty 样式优化 */
+ :global(html.dark) .el-empty__image svg {
+   fill: #6b7280; /* 图标变为灰色 */
+ }
+
+ :global(html.dark) .el-empty__description p {
+   color: #d1d5db !important; /* 文字变为柔和的白色，不刺眼 */
+ }
+
+ /* 如果需要调整图标大小或透明度 */
+ :global(html.dark) .el-empty__image {
+   opacity: 0.8;
+ }
  </style>
