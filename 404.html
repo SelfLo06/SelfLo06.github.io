@@ -1,24 +1,30 @@
-<!-- public/404.html -->
+<!-- /404.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Redirecting...</title>
-  <script>
-    // 捕获用户原本想去的路径 (例如 /admin 或 /article/123)
-    // 并将其存储在 sessionStorage 中。
-    // location.pathname 是路径，location.search 是 ? 后面的查询参数。
-    sessionStorage.redirect = location.pathname + location.search;
-  </script>
-  <!--
-    【魔法核心】
-    立即执行一次 "meta refresh" 重定向。
-    它告诉浏览器：“不要停留在这个页面，马上跳转到网站的根目录 /”。
-    我们的 Vue 应用正是在根目录的 index.html 中等待着。
-  -->
-  <meta http-equiv="refresh" content="0;URL='/'"></meta>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>selflo's Blog</title>
+  <!-- Font Awesome 的 CDN 链接 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-<!-- 这个页面会一闪而过，所以 body 里什么都不需要 -->
+<div id="app"></div>
+<script type="module" src="/src/main.js"></script>
+
+<!-- 这是我们需要的唯一一个重定向脚本 -->
+<script>
+  (function(){
+    var path = window.location.pathname;
+    var ss = window.sessionStorage;
+    // 将用户试图访问的路径（比如 /admin）存储到 sessionStorage
+    ss.setItem('redirectPath', path);
+  })();
+</script>
 </body>
 </html>
