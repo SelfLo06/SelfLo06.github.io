@@ -424,11 +424,4 @@ watch(() => route.query.tagIds, (newTagIds) => {
   justify-content: center;
   margin-top: 2rem;
 }
-:global(html.dark) .search-results :deep(.el-empty__image svg) {
-  filter: invert(95%) sepia(6%) saturate(250%) hue-rotate(180deg) brightness(65%) contrast(85%);
-}
-
-:global(html.dark) .search-results :deep(.el-empty__description p) {
-  color: var(--text-color-secondary);
-}
 </style>

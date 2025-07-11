@@ -243,53 +243,17 @@ watch(
    gap: 0.4rem;
  }
 
- .article-grid {
-   display: grid;
-   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-   gap: 1.5rem;
-   margin-bottom: 2rem;
+ :global(html.dark) .el-empty :deep(.el-empty__image) {
+   /*
+    * 这是一个非常强大的 CSS 技巧，用于改变单色或灰色系 SVG 的颜色。
+    * 我们反转 SVG 的颜色 (白色变黑色)，然后再通过一系列滤镜
+    * 将其调整为我们需要的、与暗黑主题匹配的柔和灰色。
+   */
+   filter: invert(85%) sepia(10%) saturate(150%) hue-rotate(180deg) brightness(80%);
  }
 
- .empty-container {
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   min-height: 400px;
-   margin-bottom: 2rem;
- }
-
- .pagination-container {
-   display: flex;
-   justify-content: center;
-   margin-top: 2rem;
- }
-
- /* 为 el-empty 提供精确、安全的暗黑模式样式 */
- :global(html.dark) .empty-container :deep(.el-empty__image svg) {
-   filter: invert(95%) sepia(6%) saturate(250%) hue-rotate(180deg) brightness(65%) contrast(85%);
- }
- :global(html.dark) .empty-container :deep(.el-empty__description p) {
+ :global(html.dark) .el-empty :deep(.el-empty__description p) {
+   /* 直接使用我们定义的文字颜色变量 */
    color: var(--text-color-secondary);
- }
-
- /* 为分页组件 el-pagination 适配暗黑模式 */
- :global(html.dark) .el-pagination {
-   --el-pagination-bg-color: transparent; /* 背景透明，与页面融为一体 */
-   --el-pagination-text-color: var(--text-color);
- }
- :global(html.dark) .el-pagination .btn-prev,
- :global(html.dark) .el-pagination .btn-next,
- :global(html.dark) .el-pagination .el-pager li {
-   background-color: var(--card-bg-color); /* 使用卡片背景色 */
-   color: var(--text-color);
-   border: 1px solid var(--border-color);
- }
- :global(html.dark) .el-pagination .el-pager li:hover {
-   color: var(--primary-color);
- }
- :global(html.dark) .el-pagination .el-pager li.is-active {
-   background-color: var(--primary-color);
-   color: white;
-   border-color: var(--primary-color);
  }
  </style>
