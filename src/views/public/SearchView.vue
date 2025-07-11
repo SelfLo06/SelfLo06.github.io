@@ -40,8 +40,11 @@
       </div>
     </div>
 
-    <!-- 当加载完成且没有文章时，显示Element Plus的空状态组件 -->
-    <el-empty v-else description="没有找到相关的文章，换个关键词试试吧~"></el-empty>
+    <!-- 当加载完成且没有文章时，显示空状态组件 -->
+    <div v-else class="empty-container">
+      <el-empty description="没有找到相关的文章，换个关键词试试吧~"></el-empty>
+    </div>
+
     <!-- 分页组件 -->
     <div v-if="pagination.total > 0" class="pagination-container">
       <el-pagination
@@ -240,9 +243,48 @@ watch(
    gap: 0.4rem;
  }
 
+ .article-grid {
+   display: grid;
+   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+   gap: 1.5rem;
+   margin-bottom: 2rem;
+ }
+
+ .empty-container {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   min-height: 400px;
+   margin-bottom: 2rem;
+ }
+
  .pagination-container {
    display: flex;
    justify-content: center;
    margin-top: 2rem;
+ }
+
+ /* 暗夜模式下的 el-pagination 样式优化 */
+ :global(html.dark) .el-pagination {
+   --el-pagination-bg-color: var(--card-bg-color);
+   --el-pagination-text-color: var(--text-color);
+   --el-pagination-border-color: var(--border-color);
+ }
+
+ :global(html.dark) .el-pagination .btn-prev,
+ :global(html.dark) .el-pagination .btn-next,
+ :global(html.dark) .el-pagination .el-pager li {
+   background-color: var(--card-bg-color);
+   color: var(--text-color);
+   border: 1px solid var(--border-color);
+ }
+
+ :global(html.dark) .el-pagination .el-pager li:hover {
+   color: var(--primary-color);
+ }
+
+ :global(html.dark) .el-pagination .el-pager li.is-active {
+   background-color: var(--primary-color);
+   color: white;
  }
  </style>

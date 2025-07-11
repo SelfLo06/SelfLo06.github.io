@@ -163,4 +163,17 @@ router.beforeEach((to, from, next) => {
   }
 });
 
+// 这段逻辑会在 Vue 应用加载后、第一次导航前执行
+router.isReady().then(() => {
+  // 检查 sessionStorage 中是否有我们存储的重定向路径
+  const redirectPath = sessionStorage.getItem('redirect');
+  if (redirectPath) {
+    // 如果有，就清除它，防止下次刷新时再次触发
+    sessionStorage.removeItem('redirect');
+    // 然后用 router.replace() 无缝跳转到用户原本想访问的页面
+    // replace 不会留下历史记录，用户点击后退时不会回到首页
+    router.replace(redirectPath);
+  }
+});
+
 export default router;

@@ -1,0 +1,17 @@
+<!-- /404.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Redirecting...</title>
+  <script>
+    // 捕获用户原本想去的路径（包括查询参数），并存储起来
+    // location.pathname 是路径, location.search 是 ? 后面的参数
+    sessionStorage.redirect = location.pathname.substring(location.pathname.indexOf('/', 1)) + location.search;
+  </script>
+  <!-- 立即重定向到我们的 Vue 应用的入口 index.html -->
+  <meta http-equiv="refresh" content="0;URL='/'"></meta>
+</head>
+<body>
+</body>
+</html>
