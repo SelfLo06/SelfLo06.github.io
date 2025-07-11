@@ -165,13 +165,14 @@ router.beforeEach((to, from, next) => {
 
 // 在 router 实例创建之后，导出之前
 
-// 检查 sessionStorage 中是否有重定向路径
-const redirectPath = window.sessionStorage.getItem('redirectPath');
-// 如果有路径，并且不是根路径
-if (redirectPath && redirectPath !== '/') {
-  // 用完之后就删掉，防止下次刷新时重复跳转
-  window.sessionStorage.removeItem('redirectPath');
-  // 使用 router.replace 跳转到正确的路径
+// 检查 sessionStorage 中是否有我们存下的重定向路径
+const redirectPath = sessionStorage.getItem('redirectPath');
+
+// 如果有路径
+if (redirectPath) {
+  // 用完之后就立刻删掉，防止下次刷新时重复跳转
+  sessionStorage.removeItem('redirectPath');
+  // 使用 router.replace() 在客户端无刷新地跳转到用户本来想去的路径
   router.replace(redirectPath);
 }
 

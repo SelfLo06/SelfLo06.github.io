@@ -1,30 +1,22 @@
-<!-- /404.html -->
+<!-- /public/404.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="shortcut icon" href="/favicon.ico" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-  <link rel="manifest" href="/site.webmanifest" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>selflo's Blog</title>
-  <!-- Font Awesome 的 CDN 链接 -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <meta charset="utf-8">
+  <title>Redirecting...</title>
+  <script>
+    // 1. 把用户想访问的路径（比如 /admin）存到 sessionStorage 里
+    sessionStorage.setItem('redirectPath', window.location.pathname);
+
+    // 2. 立刻把浏览器重定向到网站的根目录
+    window.location.replace(
+      // 这会拼接出你的主页地址，比如 https://selflo06.xyz/
+      window.location.protocol + '//' + window.location.host
+    );
+  </script>
 </head>
 <body>
-<div id="app"></div>
-<script type="module" src="/src/main.js"></script>
-
-<!-- 这是我们需要的唯一一个重定向脚本 -->
-<script>
-  (function(){
-    var path = window.location.pathname;
-    var ss = window.sessionStorage;
-    // 将用户试图访问的路径（比如 /admin）存储到 sessionStorage
-    ss.setItem('redirectPath', path);
-  })();
-</script>
+<!-- 如果脚本执行失败，用户会看到这个提示 -->
+<p>If you are not redirected automatically, follow this <a href="/">link to the homepage</a>.</p>
 </body>
 </html>
