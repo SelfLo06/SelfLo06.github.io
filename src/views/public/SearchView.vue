@@ -264,11 +264,32 @@ watch(
    margin-top: 2rem;
  }
 
- :global(html.dark) .search-view :deep(.el-empty__image svg) { /* 假设根元素 class 为 search-view */
+ /* 为 el-empty 提供精确、安全的暗黑模式样式 */
+ :global(html.dark) .empty-container :deep(.el-empty__image svg) {
    filter: invert(95%) sepia(6%) saturate(250%) hue-rotate(180deg) brightness(65%) contrast(85%);
  }
-
- :global(html.dark) .search-view :deep(.el-empty__description p) {
+ :global(html.dark) .empty-container :deep(.el-empty__description p) {
    color: var(--text-color-secondary);
+ }
+
+ /* 为分页组件 el-pagination 适配暗黑模式 */
+ :global(html.dark) .el-pagination {
+   --el-pagination-bg-color: transparent; /* 背景透明，与页面融为一体 */
+   --el-pagination-text-color: var(--text-color);
+ }
+ :global(html.dark) .el-pagination .btn-prev,
+ :global(html.dark) .el-pagination .btn-next,
+ :global(html.dark) .el-pagination .el-pager li {
+   background-color: var(--card-bg-color); /* 使用卡片背景色 */
+   color: var(--text-color);
+   border: 1px solid var(--border-color);
+ }
+ :global(html.dark) .el-pagination .el-pager li:hover {
+   color: var(--primary-color);
+ }
+ :global(html.dark) .el-pagination .el-pager li.is-active {
+   background-color: var(--primary-color);
+   color: white;
+   border-color: var(--primary-color);
  }
  </style>

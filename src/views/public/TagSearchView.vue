@@ -424,20 +424,11 @@ watch(() => route.query.tagIds, (newTagIds) => {
   justify-content: center;
   margin-top: 2rem;
 }
-/* :global(html.dark) 让我们能够匹配到组件外的 .dark 类 */
-/* .tag-search-view 是当前组件的根元素类名，确保样式只在该视图下生效 */
-/* :deep() 让我们能够穿透到子组件 el-empty 的内部 */
-
-:global(html.dark) .tag-search-view :deep(.el-empty__image svg) {
-  /*
-   * 这是一个更可靠的方法，通过滤镜将白色 SVG 变为我们想要的灰色
-   * 它比直接修改 fill 颜色更通用
-   */
+:global(html.dark) .search-results :deep(.el-empty__image svg) {
   filter: invert(95%) sepia(6%) saturate(250%) hue-rotate(180deg) brightness(65%) contrast(85%);
 }
 
-:global(html.dark) .tag-search-view :deep(.el-empty__description p) {
-  /* 直接使用我们定义的文字颜色变量 */
+:global(html.dark) .search-results :deep(.el-empty__description p) {
   color: var(--text-color-secondary);
 }
 </style>
