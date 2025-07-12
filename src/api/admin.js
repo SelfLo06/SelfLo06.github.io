@@ -37,17 +37,17 @@ export const getAllCategories = () => {
 
 export const addTagAdmin = (data) => {
   // 【修正】/tags -> /tag
-  return request.post('/tag', data);
+  return request.post('/tags', data);
 };
 
 export const updateTagAdmin = (id, data) => {
   // 【修正】/tags/{id} -> /tag/{id}
-  return request.put(`/tag/${id}`, data);
+  return request.put(`/tags/${id}`, data);
 };
 
 export const deleteTagAdmin = (id) => {
   // 【修正】/tags/{id} -> /tag/{id}
-  return request.delete(`/tag/${id}`);
+  return request.delete(`/tags/${id}`);
 };
 
 // 【注意】GET /tags 接口是复数，这个是正确的，无需修改。

@@ -72,10 +72,8 @@
 </template>
 <script setup>
 import { ref, computed, onMounted, watch, nextTick} from 'vue';
-//import { useRoute } from 'vue-router';
 import { getArticleDetailById } from '@/api/public';
 import { useThemeStore } from '@/stores/theme';
-
 
 // 引入 markdown 渲染和代码高亮库
 import { marked } from 'marked';
@@ -104,55 +102,61 @@ const shouldShowComments = computed(() => {
 // 配置 marked 渲染器
 marked.setOptions({
   renderer: new marked.Renderer(),
-  // 开启 GFM (GitHub Flavored Markdown)
   gfm: true,
-  // 优化换行符处理
   breaks: true,
-  // 代码高亮配置
   highlight: function(code, lang) {
     const language = hljs.getLanguage(lang) ? lang : 'plaintext';
     return hljs.highlight(code, { language }).value;
   },
-  langPrefix: 'hljs language-', // 高亮代码块的 class 前缀
+  langPrefix: 'hljs language-',
 });
 
 const renderedContent = computed(() => {
   if (article.value && article.value.contentMd) {
-    // 只进行 markdown 解析，不再手动处理行号
     return marked.parse(article.value.contentMd);
   }
   return '';
 });
 
-
-
 // 一个函数，用于在渲染后添加复制按钮
-const addCopyButtons = async () => {
-  await nextTick();
-
-  // 等待一小段时间确保DOM完全渲染
-  setTimeout(() => {
+const addCopyButtons = () => {
+  // 等待DOM更新完成
+  nextTick(() => {
     const codeBlocks = document.querySelectorAll('.markdown-content pre');
-    console.log('找到代码块数量:', codeBlocks.length); // 调试用
 
-    codeBlocks.forEach((block, index) => {
-      // 如果已经有复制按钮了，跳过
+    codeBlocks.forEach((block) => {
       if (block.querySelector('.copy-code-btn')) return;
 
       const button = document.createElement('button');
       button.className = 'copy-code-btn';
       button.innerHTML = '<i class="fa-regular fa-copy"></i> 复制';
 
-      button.addEventListener('click', async () => {
-        const code = block.querySelector('code').innerText;
+      button.addEventListener('click', () => {
+        const codeToCopy = block.querySelector('code').innerText;
+
+        // 创建一个临时的 textarea 来执行复制命令，以获得更好的兼容性
+        const textarea = document.createElement('textarea');
+        textarea.value = codeToCopy;
+        textarea.style.position = 'fixed'; // 防止页面滚动
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+
+        textarea.select();
+        let success = false;
         try {
-          await navigator.clipboard.writeText(code);
+          success = document.execCommand('copy');
+        } catch (err) {
+          console.error('Fallback copy failed:', err);
+        }
+
+        document.body.removeChild(textarea);
+
+        if (success) {
           button.innerHTML = '<i class="fa-solid fa-check"></i> 已复制';
           setTimeout(() => {
             button.innerHTML = '<i class="fa-regular fa-copy"></i> 复制';
           }, 2000);
-        } catch (err) {
-          console.error('复制失败:', err);
+        } else {
           button.innerHTML = '<i class="fa-solid fa-exclamation-triangle"></i> 复制失败';
           setTimeout(() => {
             button.innerHTML = '<i class="fa-regular fa-copy"></i> 复制';
@@ -161,9 +165,8 @@ const addCopyButtons = async () => {
       });
 
       block.appendChild(button);
-      console.log(`第 ${index + 1} 个代码块添加了复制按钮`); // 调试用
     });
-  }, 100);
+  });
 };
 
 /**
@@ -175,7 +178,6 @@ const loadGiscus = () => {
 
   container.innerHTML = '';
 
-  // 使用标准的 Giscus 主题名称
   const giscusTheme = themeStore.theme === 'light' ? 'light' : 'dark';
 
   const script = document.createElement('script');
@@ -196,18 +198,13 @@ const loadGiscus = () => {
 // 获取文章详情的函数
 const fetchArticleDetail = async (articleId) => {
   loading.value = true;
-  article.value = null; // 重置文章数据
+  article.value = null;
   try {
     const res = await getArticleDetailById(articleId);
     if (res.code === 0 && res.data) {
-      // 只展示已发布的文章
       if (res.data.status === 0) {
         article.value = res.data;
-        document.title = `${article.value.title} - selflo's Blog`; // 更新页面标题
-
-        // 在获取文章数据并确认渲染后，再处理DOM相关的操作
-        await nextTick(); // 等待DOM更新
-        addCopyButtons();  // 添加复制代码按钮
+        document.title = `${article.value.title} - selflo's Blog`;
       } else {
         console.warn('尝试访问一篇草稿文章，已阻止渲染。');
       }
@@ -232,17 +229,16 @@ onMounted(() => {
   fetchArticleDetail(props.id);
 });
 
-// 当用户在文章A详情页，点击一个链接跳转到文章B详情页时，
-// 组件实例会被复用，但 onMounted 不会重新执行。
-// 我们需要 watch 路由参数的变化来重新获取数据。
+// 监听路由参数的变化来重新获取数据
 watch(() => props.id, (newId) => {
   if (newId) {
     fetchArticleDetail(newId);
   }
 });
 
-watch(renderedContent, () => {
-  if (renderedContent.value) {
+// 【核心修正】当渲染内容变化时，才去添加复制按钮，这是最可靠的时机
+watch(renderedContent, (newContent) => {
+  if (newContent) {
     addCopyButtons();
   }
 });
@@ -261,10 +257,8 @@ watch(() => themeStore.theme, (newTheme) => {
   const giscusFrame = document.querySelector('iframe.giscus-frame');
   if (!giscusFrame) return;
 
-  // 使用 Giscus 官方支持的主题名称
   const newGiscusTheme = newTheme === 'light' ? 'light' : 'dark';
 
-  // 使用 postMessage 通知 Giscus 更新其主题
   giscusFrame.contentWindow.postMessage(
     { giscus: { setConfig: { theme: newGiscusTheme } } },
     'https://giscus.app'
