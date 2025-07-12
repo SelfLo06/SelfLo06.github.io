@@ -15,7 +15,7 @@ import { marked } from 'marked';
 import PageHeader from '@/components/PageHeader.vue';
 
 const aboutContentMd = ref(`
-Hiii, 我是 selflo，一名来自**南京大学智能软件**的大一学生！ (^▽^)
+Hiii, 我是 selflo，一名来自**南京大学智能软件**的学生！ (^▽^)
 
 这个博客诞生于我的大一暑假（2025.7.3 - 2025.7.8），是我给自己布置的一份复习和巩固知识的暑期作业，也是一个**从零开始，完全手写**~(存疑)~的项目。
 
