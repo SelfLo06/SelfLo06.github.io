@@ -12,7 +12,7 @@ const errorMessage = ref('');
 const router = useRouter();
 
 // 从环境变量中获取站点密码
-const correctSecretKey = import.meta.env.VITE_APP_ADMIN_SECRET_KEY;
+const correctSecretKey = import.meta.env.VITE_SITE_PASSWORD;
 
 const handleLogin = async () => {
   errorMessage.value = '';

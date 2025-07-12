@@ -4,7 +4,7 @@ import axios from 'axios'
 const instance = axios.create({
   // 你的后端 API 的基础路径
   // 这样设置后，我们请求时只需要写相对路径，比如 /user/login
-  baseURL: 'http://localhost:8080',
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   // 请求超时时间
   timeout: 10000,
 });
