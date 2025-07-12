@@ -39,10 +39,13 @@ jobs:
       # 第四步：创建生产环境的 .env 文件
       # 这是关键一步！我们不能把生产环境的 URL 写在代码里
       # ${{ secrets.VUE_APP_API_URL }} 会去读取你在 GitHub 仓库里设置的安全密钥
+      # 第四步：创建生产环境的 .env 文件
+      # 这是关键一步！我们不能把生产环境的 URL 写在代码里
+      # ${{ secrets.VUE_APP_API_URL }} 会去读取你在 GitHub 仓库里设置的安全密钥
       - name: Create .env.production file 🤫
-        run: echo "VUE_APP_API_BASE_URL=${{ secrets.VUE_APP_API_URL }}" > .env.production
-
-      # 第五步：打包构建项目
+        run: |
+          echo "VUE_APP_API_URL=${{ secrets.VUE_APP_API_URL }}" > .env.production
+          echo "VUE_APP_SITE_PASSWORD=${{ secrets.VUE_APP_SITE_PASSWORD }}" >> .env.production      # 第五步：打包构建项目
       # 相当于在虚拟机里运行 npm run build，会生成 dist 文件夹
       - name: Build project 🏗️
         run: npm run build
