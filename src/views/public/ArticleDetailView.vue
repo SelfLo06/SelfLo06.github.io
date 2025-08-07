@@ -76,10 +76,16 @@ import { ref, computed, onMounted, watch, nextTick } from 'vue';
 import { getArticleDetailById } from '@/api/public';
 import { useThemeStore } from '@/stores/theme';
 
-import { marked } from 'marked';
+// 【全新】引入 markdown-it 及其插件
+import MarkdownIt from 'markdown-it';
+import mdMark from 'markdown-it-mark';
+import mdKatex from 'markdown-it-katex';
+
+// 代码高亮库和样式
 import hljs from 'highlight.js';
 import 'highlight.js/styles/atom-one-dark.css';
-import markedKatex from "marked-katex-extension";
+
+// KaTeX 的 CSS 样式 (markdown-it-katex 需要它)
 import 'katex/dist/katex.min.css';
 
 import PageHeader from '@/components/PageHeader.vue';
@@ -100,63 +106,40 @@ const shouldShowComments = computed(() => {
 });
 
 // =======================================================
-// 定义 marked 的自定义扩展
+// 【全新】配置 markdown-it
 // =======================================================
 
-// 定义一个扩展，用于处理 ==高亮== 语法
-const markedHighlightExtension = {
-  name: 'mark',
-  level: 'inline',
-  start(src) {
-    return src.indexOf('==');
-  },
-  tokenizer(src, tokens) {
-    // 【最终正则表达式修正】使用更宽容的规则
-    const rule = /^==(.+?)==/;
+// 1. 实例化 markdown-it
+const md = new MarkdownIt({
+  html: true,    // 允许解析内容中的 HTML 标签
+  linkify: true, // 自动将链接文字转换为链接
+  breaks: true,  // 将 \n 转换为 <br>
 
-    const match = rule.exec(src);
-
-    if (match) {
-      return {
-        type: 'mark',
-        raw: match[0],
-        text: match[1].trim(),
-      };
+  // 2. 配置代码高亮
+  highlight: function (str, lang) {
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        // 返回 hljs 处理过的 HTML
+        return '<pre class="hljs"><code>' +
+          hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
+          '</code></pre>';
+      } catch (__) {}
     }
-  },
-  renderer(token) {
-    return `<mark>${token.text}</mark>`;
-  },
-};
-
-
-// =======================================================
-// 配置 marked：加载所有扩展并设置选项
-// =======================================================
-
-// 通过一次调用，将所有扩展“添加”到 marked 中
-marked.use(
-  markedKatex({ throwOnError: false }),
-  markedHighlightExtension
-);
-
-// 配置 marked 的其他选项
-marked.setOptions({
-  renderer: new marked.Renderer(),
-  gfm: true,
-  breaks: true,
-  highlight: function(code, lang) {
-    const language = hljs.getLanguage(lang) ? lang : 'plaintext';
-    return hljs.highlight(code, { language }).value;
-  },
-  langPrefix: 'hljs language-',
+    // 如果没有指定语言或高亮失败，则返回原始代码
+    return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
+  }
 });
+
+// 3. 使用插件
+md.use(mdMark);   // 启用 ==高亮== 语法
+md.use(mdKatex); // 启用 LaTeX 公式语法
 
 
 // 计算属性，将 Markdown 文本转换为 HTML
 const renderedContent = computed(() => {
   if (article.value && article.value.contentMd) {
-    return marked.parse(article.value.contentMd);
+    // 使用 markdown-it 进行渲染
+    return md.render(article.value.contentMd);
   }
   return '';
 });
@@ -164,7 +147,8 @@ const renderedContent = computed(() => {
 // 一个函数，用于在渲染后添加复制按钮
 const addCopyButtons = () => {
   nextTick(() => {
-    const codeBlocks = document.querySelectorAll('.markdown-content pre');
+    // 【修改】选择器稍微调整以匹配 markdown-it 的输出
+    const codeBlocks = document.querySelectorAll('.markdown-content pre.hljs');
     codeBlocks.forEach((block) => {
       if (block.querySelector('.copy-code-btn')) return;
       const button = document.createElement('button');
@@ -197,6 +181,8 @@ const addCopyButtons = () => {
           }, 2000);
         }
       });
+      // 【修改】pre 标签现在是按钮的直接父级
+      block.style.position = 'relative';
       block.appendChild(button);
     });
   });
@@ -401,51 +387,25 @@ watch(() => themeStore.theme, (newTheme) => {
 /* ======================================================= */
 /* 代码块样式 (Highlight.js)                              */
 /* ======================================================= */
-.markdown-content :deep(pre) {
-  position: relative;
+/* 【调整】修改选择器以匹配 markdown-it 的输出，并简化样式 */
+.markdown-content :deep(pre.hljs) {
+  position: relative; /* 为复制按钮定位 */
   background: #2d3748;
   border-radius: 16px;
   margin: 2em 0;
-  padding: 1.5em 1.5em 1.5em 4.5em;
+  padding: 1.5em;
   overflow-x: auto;
-  font-family: 'SF Mono', 'Monaco', 'Consolas', 'Roboto Mono', monospace;
-  font-size: 14px;
-  line-height: 1.6;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
-.markdown-content :deep(pre::before) {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 3em;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.2);
-  border-top-left-radius: 16px;
-  border-bottom-left-radius: 16px;
-  z-index: 1;
-}
-.markdown-content :deep(pre::after) {
-  content: '';
-  position: absolute;
-  left: 3em;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  background: rgba(255, 255, 255, 0.2);
-  z-index: 2;
-}
-.markdown-content :deep(pre code) {
+.markdown-content :deep(pre.hljs code) {
+  font-family: 'SF Mono', 'Monaco', 'Consolas', 'Roboto Mono', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #e2e8f0;
   background: transparent;
   padding: 0;
   border-radius: 0;
-  color: #e2e8f0;
-  font-family: inherit;
-  font-size: inherit;
-  line-height: inherit;
-  position: relative;
-  z-index: 3;
 }
 .markdown-content :deep(.copy-code-btn) {
   position: absolute;
