@@ -479,49 +479,43 @@ watch(() => themeStore.theme, (newTheme) => {
   color: var(--text-color); /* 让公式颜色跟随主题的文字颜色 */
 }
 
+
 /* ======================================================= */
-/* 折叠元素 <details> 和 <summary> 样式适配       */
+/* 【最终版】折叠元素 <details> 和 <summary> 样式适配       */
 /* ======================================================= */
 
-/* 为整个折叠块添加边框和背景 */
+/* 1. 设置容器样式 */
 .markdown-content :deep(details) {
   margin: 1.5em 0;
   padding: 1em 1.5em;
   background-color: rgba(128, 128, 128, 0.05);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-main);
-  /* 在父元素上直接设置颜色，期望子元素能够继承 */
-  color: var(--text-color);
 }
 
-/* 再次为折叠标题 <summary> 明确设置样式 */
+/* 2. 设置标题 <summary> 的样式 */
 .markdown-content :deep(summary) {
   font-weight: 600;
   cursor: pointer;
-  color: var(--text-color); /* 再次声明，提高优先级 */
+  color: var(--text-color); /* 关键：让标题颜色跟随主题 */
   transition: color 0.2s ease;
-  /* 如果展开了，给标题和内容之间增加一点间距 */
   margin-bottom: 0.5em;
 }
-
-/* 【核心修复】使用通用后代选择器，强制覆盖内部所有常见标签的颜色 */
-.markdown-content :deep(details p),
-.markdown-content :deep(details li),
-.markdown-content :deep(details div),
-.markdown-content :deep(details span) {
-  color: var(--text-color);
-}
-
-/* 鼠标悬停在标题上时，改变颜色以提供视觉反馈 */
 .markdown-content :deep(summary:hover) {
   color: var(--primary-color);
 }
 
-/* 确保悬停效果也能影响到标题的三角符号 */
-.markdown-content :deep(summary:hover *) {
-  color: inherit;
+/* 3. 【最重要的一步】强制覆盖折叠内容区域所有文本的颜色 */
+/*
+   我们使用 * (通用选择器) 来选中 <details> 内部的所有子元素，
+   并强制它们继承父元素 <details> 的颜色。
+   如果还不行，就用 !important。
+*/
+.markdown-content :deep(details > *) {
+  color: var(--text-color); /* 尝试常规方式 */
+  /* 如果上面的代码在刷新后依然无效，请取消下面这行的注释 */
+  /* color: var(--text-color) !important;  */
 }
-
 
 /* 分割线和Giscus容器 */
 .divider {
