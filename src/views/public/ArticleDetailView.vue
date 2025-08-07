@@ -505,7 +505,7 @@ watch(() => themeStore.theme, (newTheme) => {
   color: var(--primary-color);
 }
 
-/* 3. 【最重要的一步】强制覆盖折叠内容区域所有文本的颜色 */
+/* 3. 强制覆盖折叠内容区域所有文本的颜色 */
 /*
    我们使用 * (通用选择器) 来选中 <details> 内部的所有子元素，
    并强制它们继承父元素 <details> 的颜色。
