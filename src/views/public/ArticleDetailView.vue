@@ -479,6 +479,42 @@ watch(() => themeStore.theme, (newTheme) => {
   color: var(--text-color); /* 让公式颜色跟随主题的文字颜色 */
 }
 
+/* /src/views/public/ArticleDetailView.vue -> <style scoped> */
+
+/* ======================================================= */
+/* 【新增】折叠元素 <details> 和 <summary> 样式适配       */
+/* ======================================================= */
+
+/* 为整个折叠块添加边框和背景，使其看起来像一个独立的组件 */
+.markdown-content :deep(details) {
+  margin: 1.5em 0;
+  padding: 1em 1.5em;
+  background-color: rgba(128, 128, 128, 0.05); /* 使用一个与表格、引用块相似的半透明背景 */
+  border: 1px solid var(--border-color); /* 使用主题的边框颜色 */
+  border-radius: var(--border-radius-main); /* 使用主题的圆角 */
+}
+
+/* 确保折叠块内部的段落等也继承正确的颜色和行高 */
+.markdown-content :deep(details > p) {
+  color: var(--text-color);
+  line-height: 1.8;
+}
+
+/* 设置折叠标题的样式 */
+.markdown-content :deep(summary) {
+  font-weight: 600; /* 加粗字体，使其看起来像个标题 */
+  cursor: pointer; /* 鼠标悬停时显示为可点击的手指图标 */
+  color: var(--text-color); /* 【核心修复】明确设置标题的颜色，这也会影响默认的三角箭头颜色 */
+  transition: color 0.2s ease;
+  margin-bottom: 0.5em; /* 如果展开了，给标题和内容之间增加一点间距 */
+}
+
+/* 鼠标悬停在标题上时，改变颜色以提供视觉反馈 */
+.markdown-content :deep(summary:hover) {
+  color: var(--primary-color); /* 悬停时使用主题的主色调，更醒目 */
+}
+
+
 /* 分割线和Giscus容器 */
 .divider {
   margin: 40px 0;
