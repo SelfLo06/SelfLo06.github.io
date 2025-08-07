@@ -70,15 +70,18 @@
 
   </div>
 </template>
+
 <script setup>
-import { ref, computed, onMounted, watch, nextTick} from 'vue';
+import { ref, computed, onMounted, watch, nextTick } from 'vue';
 import { getArticleDetailById } from '@/api/public';
 import { useThemeStore } from '@/stores/theme';
 
-// 引入 markdown 渲染和代码高亮库
+
 import { marked } from 'marked';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/atom-one-dark.css';
+import markedKatex from "marked-katex-extension"; // 引入 KaTeX 扩展
+import 'katex/dist/katex.min.css'; // 引入 KaTeX 的 CSS 样式
 
 import PageHeader from '@/components/PageHeader.vue';
 
@@ -90,8 +93,7 @@ const props = defineProps({
   }
 });
 
-const themeStore = useThemeStore(); // 获取 theme store 实例
-
+const themeStore = useThemeStore();
 const article = ref(null);
 const loading = ref(true);
 
@@ -99,7 +101,17 @@ const shouldShowComments = computed(() => {
   return !loading.value && article.value && article.value.id;
 });
 
-// 配置 marked 渲染器
+// =======================================================
+// 【核心修改】配置 marked，使其同时支持代码高亮和 LaTeX
+// =======================================================
+
+// 1. 使用 KaTeX 扩展
+// 这必须在 setOptions 之前调用
+marked.use(markedKatex({
+  throwOnError: false // `false` 会在解析失败时显示原始的 TeX 代码，而不是抛出错误
+}));
+
+// 2. 配置 marked 的其他选项
 marked.setOptions({
   renderer: new marked.Renderer(),
   gfm: true,
@@ -111,8 +123,11 @@ marked.setOptions({
   langPrefix: 'hljs language-',
 });
 
+
+// 计算属性，用于将 Markdown + LaTeX 文本转换为 HTML
 const renderedContent = computed(() => {
   if (article.value && article.value.contentMd) {
+    // marked.parse 现在会自动处理 Markdown 和 LaTeX 公式
     return marked.parse(article.value.contentMd);
   }
   return '';
@@ -120,27 +135,20 @@ const renderedContent = computed(() => {
 
 // 一个函数，用于在渲染后添加复制按钮
 const addCopyButtons = () => {
-  // 等待DOM更新完成
   nextTick(() => {
     const codeBlocks = document.querySelectorAll('.markdown-content pre');
-
     codeBlocks.forEach((block) => {
       if (block.querySelector('.copy-code-btn')) return;
-
       const button = document.createElement('button');
       button.className = 'copy-code-btn';
       button.innerHTML = '<i class="fa-regular fa-copy"></i> 复制';
-
       button.addEventListener('click', () => {
         const codeToCopy = block.querySelector('code').innerText;
-
-        // 创建一个临时的 textarea 来执行复制命令，以获得更好的兼容性
         const textarea = document.createElement('textarea');
         textarea.value = codeToCopy;
-        textarea.style.position = 'fixed'; // 防止页面滚动
+        textarea.style.position = 'fixed';
         textarea.style.left = '-9999px';
         document.body.appendChild(textarea);
-
         textarea.select();
         let success = false;
         try {
@@ -148,9 +156,7 @@ const addCopyButtons = () => {
         } catch (err) {
           console.error('Fallback copy failed:', err);
         }
-
         document.body.removeChild(textarea);
-
         if (success) {
           button.innerHTML = '<i class="fa-solid fa-check"></i> 已复制';
           setTimeout(() => {
@@ -163,7 +169,6 @@ const addCopyButtons = () => {
           }, 2000);
         }
       });
-
       block.appendChild(button);
     });
   });
@@ -175,11 +180,8 @@ const addCopyButtons = () => {
 const loadGiscus = () => {
   const container = document.getElementById('giscus-container');
   if (!container) return;
-
   container.innerHTML = '';
-
   const giscusTheme = themeStore.theme === 'light' ? 'light' : 'dark';
-
   const script = document.createElement('script');
   script.src = 'https://giscus.app/client.js';
   script.setAttribute('data-theme', giscusTheme);
@@ -191,7 +193,6 @@ const loadGiscus = () => {
   script.setAttribute('data-lang', 'zh-CN');
   script.setAttribute('crossorigin', 'anonymous');
   script.async = true;
-
   container.appendChild(script);
 };
 
@@ -236,7 +237,7 @@ watch(() => props.id, (newId) => {
   }
 });
 
-// 【核心修正】当渲染内容变化时，才去添加复制按钮，这是最可靠的时机
+// 【核心修正】当渲染内容变化时，才去添加复制按钮
 watch(renderedContent, (newContent) => {
   if (newContent) {
     addCopyButtons();
@@ -256,9 +257,7 @@ watch(shouldShowComments, (newValue) => {
 watch(() => themeStore.theme, (newTheme) => {
   const giscusFrame = document.querySelector('iframe.giscus-frame');
   if (!giscusFrame) return;
-
   const newGiscusTheme = newTheme === 'light' ? 'light' : 'dark';
-
   giscusFrame.contentWindow.postMessage(
     { giscus: { setConfig: { theme: newGiscusTheme } } },
     'https://giscus.app'
@@ -317,7 +316,6 @@ watch(() => themeStore.theme, (newTheme) => {
 .tag-category { background-color: #fffbe6; color: #faad14; }
 .tag-category:hover { background-color: #fff1b8; }
 
-/* 为普通标签适配主题 */
 .tag-item {
   background-color: rgba(128, 128, 128, 0.1);
   color: var(--text-color-secondary);
@@ -327,9 +325,8 @@ watch(() => themeStore.theme, (newTheme) => {
   color: var(--text-color);
 }
 
-
 /* ======================================================= */
-/* 为 Markdown 内容全面应用 CSS 变量          */
+/* Markdown 内容样式                                     */
 /* ======================================================= */
 .markdown-content :deep(h1),
 .markdown-content :deep(h2),
@@ -339,61 +336,57 @@ watch(() => themeStore.theme, (newTheme) => {
   margin-top: 1.5em;
   margin-bottom: 0.8em;
   font-weight: 600;
-  color: var(--text-color); /* 应用变量 */
+  color: var(--text-color);
 }
 .markdown-content :deep(h2) {
-  border-bottom: 1px solid var(--border-color); /* 应用变量 */
+  border-bottom: 1px solid var(--border-color);
 }
 
 .markdown-content :deep(p),
 .markdown-content :deep(ul),
 .markdown-content :deep(ol) {
   line-height: 1.8;
-  color: var(--text-color); /* 应用变量 */
+  color: var(--text-color);
 }
 
 .markdown-content :deep(blockquote) {
   border-left: 3px solid var(--primary-color);
   padding: 0.1em 1em;
-  color: var(--text-color-secondary); /* 应用变量 */
-  background-color: rgba(73, 177, 245, 0.05); /* 这个可以保持 */
+  color: var(--text-color-secondary);
+  background-color: rgba(73, 177, 245, 0.05);
 }
 
-/* 行内代码块 */
 .markdown-content :deep(:not(pre) > code) {
-  background-color: rgba(128, 128, 128, 0.15); /* 应用半透明背景 */
+  background-color: rgba(128, 128, 128, 0.15);
   padding: .2em .4em;
   margin: 0;
   font-size: 85%;
   border-radius: 6px;
-  color: var(--text-color); /* 应用变量 */
+  color: var(--text-color);
 }
 
-/* 表格 */
 .markdown-content :deep(table) {
   border-collapse: collapse;
 }
 .markdown-content :deep(th),
 .markdown-content :deep(td) {
-  border: 1px solid var(--border-color); /* 应用变量 */
+  border: 1px solid var(--border-color);
   padding: .6em 1em;
   color: var(--text-color);
 }
 .markdown-content :deep(th) {
-  background-color: rgba(128, 128, 128, 0.1); /* 应用半透明背景 */
+  background-color: rgba(128, 128, 128, 0.1);
 }
 .markdown-content :deep(tr:nth-child(2n)) {
-  background-color: rgba(128, 128, 128, 0.05); /* 应用半透明背景 */
+  background-color: rgba(128, 128, 128, 0.05);
 }
 
-
-/* 代码块基础样式 */
 .markdown-content :deep(pre) {
   position: relative;
   background: #2d3748;
   border-radius: 16px;
   margin: 2em 0;
-  padding: 1.5em 1.5em 1.5em 4.5em; /* 左侧留出空间给行号区域 */
+  padding: 1.5em 1.5em 1.5em 4.5em;
   overflow-x: auto;
   font-family: 'SF Mono', 'Monaco', 'Consolas', 'Roboto Mono', monospace;
   font-size: 14px;
@@ -402,7 +395,6 @@ watch(() => themeStore.theme, (newTheme) => {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* 左侧行号区域背景 */
 .markdown-content :deep(pre::before) {
   content: '';
   position: absolute;
@@ -416,7 +408,6 @@ watch(() => themeStore.theme, (newTheme) => {
   z-index: 1;
 }
 
-/* 左侧竖线分隔符 */
 .markdown-content :deep(pre::after) {
   content: '';
   position: absolute;
@@ -428,7 +419,6 @@ watch(() => themeStore.theme, (newTheme) => {
   z-index: 2;
 }
 
-/* 代码块内的代码文本 */
 .markdown-content :deep(pre code) {
   background: transparent;
   padding: 0;
@@ -441,7 +431,6 @@ watch(() => themeStore.theme, (newTheme) => {
   z-index: 3;
 }
 
-/* 复制按钮样式 */
 .markdown-content :deep(.copy-code-btn) {
   position: absolute;
   top: 12px;
@@ -470,36 +459,24 @@ watch(() => themeStore.theme, (newTheme) => {
   transform: translateY(-1px);
 }
 
-/* 语法高亮颜色 */
-.markdown-content :deep(.hljs-comment) {
-  color: #718096;
-  font-style: italic;
-}
-
-.markdown-content :deep(.hljs-keyword) {
-  color: #9f7aea;
-}
-
-.markdown-content :deep(.hljs-string) {
-  color: #68d391;
-}
-
-.markdown-content :deep(.hljs-function) {
-  color: #63b3ed;
-}
-
-.markdown-content :deep(.hljs-number) {
-  color: #fbb6ce;
-}
-
-.markdown-content :deep(.hljs-variable) {
-  color: #fc8181;
-}
-
+.markdown-content :deep(.hljs-comment) { color: #718096; font-style: italic; }
+.markdown-content :deep(.hljs-keyword) { color: #9f7aea; }
+.markdown-content :deep(.hljs-string) { color: #68d391; }
+.markdown-content :deep(.hljs-function) { color: #63b3ed; }
+.markdown-content :deep(.hljs-number) { color: #fbb6ce; }
+.markdown-content :deep(.hljs-variable) { color: #fc8181; }
 
 .markdown-content :deep(img) {
   max-width: 100%;
   border-radius: 4px;
+}
+
+/* ======================================================= */
+/* 【新增】KaTeX 样式适配，确保公式颜色跟随主题          */
+/* ======================================================= */
+.markdown-content :deep(.katex) {
+  font-size: 1.1em; /* 可以微调公式的默认大小 */
+  color: var(--text-color); /* 让公式颜色跟随主题的文字颜色 */
 }
 
 /* 分割线和Giscus容器 */
