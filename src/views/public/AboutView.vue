@@ -1,18 +1,24 @@
+<!-- /src/views/public/AboutView.vue -->
 <template>
   <PageHeader
     title="关于我"
     cover-image="https://cdn.jsdelivr.net/gh/SelfLo06/MyImages@main/background.jpg"
   />
   <div class="about-view card">
+    <!-- v-html 的目标保持不变 -->
     <div class="content" v-html="aboutContentHtml"></div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue';
-// 引入 marked 库
-import { marked } from 'marked';
 import PageHeader from '@/components/PageHeader.vue';
+
+// 【第1步：替换 import】
+import MarkdownIt from 'markdown-it';
+import mdMark from 'markdown-it-mark';
+import mdKatex from 'markdown-it-katex';
+import 'katex/dist/katex.min.css';
 
 const aboutContentMd = ref(`
 Hiii, 我是 selflo，一名来自**南京大学智能软件**的学生！ (^▽^)
@@ -25,16 +31,29 @@ Hiii, 我是 selflo，一名来自**南京大学智能软件**的学生！ (^▽
 
 我也不知道这个博客能更新多久~（笑，明明刚创建就说这种话）~，但真心希望它能记录下我的成长轨迹。
 
-总之，非常感谢你愿意点开我的博客来看！ ヾ(o´▽\`o)ﾉ
+==总之，非常感谢你愿意点开我的博客来看！== ヾ(o´▽\`o)ﾉ
 `);
 
-// 创建一个计算属性，它会自动将上面的 Markdown 字符串解析为 HTML
+// 【第2步：实例化并配置 markdown-it】
+const md = new MarkdownIt({
+  html: true,
+  linkify: true,
+  breaks: true,
+});
+
+// 【第3步：使用插件】
+md.use(mdMark); // 这样 "关于我" 页面也能用 ==高亮==
+md.use(mdKatex); // 也能用 LaTeX 公式
+
+// 【第4步：修改计算属性】
 const aboutContentHtml = computed(() => {
-  return marked(aboutContentMd.value);
+  // 将 marked(...) 替换为 md.render(...)
+  return md.render(aboutContentMd.value);
 });
 </script>
 
 <style scoped>
+/* 样式部分完全不需要修改，可以保持原样 */
 .page-title {
   font-size: 2.2rem;
   font-weight: 600;
@@ -49,13 +68,9 @@ const aboutContentHtml = computed(() => {
   padding: 2.5rem;
   box-shadow: var(--card-shadow);
   text-align: left;
-  /* 为卡片内的文本颜色设置一个基础值 */
   color: var(--text-color);
 }
 
-/*
-  使用 :deep() 为 v-html 渲染的内容设置样式
-*/
 .content :deep(p) {
   font-size: 1.05rem;
   line-height: 1.8;
@@ -66,6 +81,14 @@ const aboutContentHtml = computed(() => {
 .content :deep(strong) {
   color: var(--primary-color);
   font-weight: 600;
+}
+
+/* 确保 <mark> 标签样式也在这里生效 */
+.content :deep(mark) {
+  background-color: rgba(73, 177, 245, 0.2);
+  color: inherit;
+  padding: 0.1em 0.3em;
+  border-radius: 4px;
 }
 
 .content :deep(code) {
