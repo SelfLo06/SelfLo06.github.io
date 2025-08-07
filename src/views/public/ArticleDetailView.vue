@@ -111,7 +111,9 @@ const markedHighlightExtension = {
     return src.indexOf('==');
   },
   tokenizer(src, tokens) {
-    const rule = /^==([^=].*?)==/;
+    // 【最终正则表达式修正】使用更宽容的规则
+    const rule = /^==(.+?)==/;
+
     const match = rule.exec(src);
 
     if (match) {
@@ -132,11 +134,10 @@ const markedHighlightExtension = {
 // 配置 marked：加载所有扩展并设置选项
 // =======================================================
 
-// 【最终修正】通过一次调用，将所有扩展“添加”到 marked 中，而不是“覆盖”
-// 这样可以确保自定义扩展和 marked 内置的 **粗体** 等语法都能正常工作
+// 通过一次调用，将所有扩展“添加”到 marked 中
 marked.use(
-  markedKatex({ throwOnError: false }), // KaTeX 扩展
-  markedHighlightExtension              // 我们自定义的高亮扩展
+  markedKatex({ throwOnError: false }),
+  markedHighlightExtension
 );
 
 // 配置 marked 的其他选项
@@ -482,10 +483,10 @@ watch(() => themeStore.theme, (newTheme) => {
 /* ======================================================= */
 /* 扩展语法样式 (高亮、公式、折叠块)                    */
 /* ======================================================= */
-/* 【新增】为 <mark> 高亮标签适配主题样式 */
+/* 为 <mark> 高亮标签适配主题样式 */
 .markdown-content :deep(mark) {
-  background-color: rgba(73, 177, 245, 0.2); /* 使用主色调的半透明版本 */
-  color: inherit; /* 文字颜色继承父元素，确保黑夜/白天模式正确显示 */
+  background-color: rgba(73, 177, 245, 0.2);
+  color: inherit;
   padding: 0.1em 0.3em;
   border-radius: 4px;
 }
