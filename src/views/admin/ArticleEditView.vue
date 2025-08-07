@@ -43,6 +43,15 @@
           track-by="id"
         ></multiselect>
       </div>
+      <div class="form-item">
+        <label for="summary">文章摘要</label>
+        <textarea
+          id="summary"
+          v-model="articleForm.summary"
+          rows="3"
+          placeholder="请输入文章摘要 (可选)"
+        ></textarea>
+      </div>
       <!-- ======================================================== -->
 
       <div class="form-item">
@@ -244,6 +253,17 @@ const handleSubmit = async () => {
 }
 .submit-btn:hover {
   opacity: 0.9;
+}
+
+.form-item input,
+.form-item select,
+.form-item textarea { /* 【核心修改：添加 .form-item textarea】 */
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  background-color: #fff;
 }
 
 /*
