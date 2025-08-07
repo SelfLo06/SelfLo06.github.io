@@ -103,7 +103,7 @@ const shouldShowComments = computed(() => {
 // 定义 marked 的自定义扩展
 // =======================================================
 
-// 【新增】定义一个扩展，用于处理 ==高亮== 语法
+// 定义一个扩展，用于处理 ==高亮== 语法
 const markedHighlightExtension = {
   name: 'mark',
   level: 'inline',
@@ -132,17 +132,14 @@ const markedHighlightExtension = {
 // 配置 marked：加载所有扩展并设置选项
 // =======================================================
 
-// 1. 使用 KaTeX 扩展
-marked.use(markedKatex({
-  throwOnError: false
-}));
+// 【最终修正】通过一次调用，将所有扩展“添加”到 marked 中，而不是“覆盖”
+// 这样可以确保自定义扩展和 marked 内置的 **粗体** 等语法都能正常工作
+marked.use(
+  markedKatex({ throwOnError: false }), // KaTeX 扩展
+  markedHighlightExtension              // 我们自定义的高亮扩展
+);
 
-// 2. 【新增】使用我们自定义的高亮扩展
-marked.use({
-  extensions: [markedHighlightExtension]
-});
-
-// 3. 配置 marked 的其他选项
+// 配置 marked 的其他选项
 marked.setOptions({
   renderer: new marked.Renderer(),
   gfm: true,
@@ -483,8 +480,9 @@ watch(() => themeStore.theme, (newTheme) => {
 .markdown-content :deep(.hljs-variable) { color: #fc8181; }
 
 /* ======================================================= */
-/* 【新增】为 <mark> 高亮标签适配主题样式                  */
+/* 扩展语法样式 (高亮、公式、折叠块)                    */
 /* ======================================================= */
+/* 【新增】为 <mark> 高亮标签适配主题样式 */
 .markdown-content :deep(mark) {
   background-color: rgba(73, 177, 245, 0.2); /* 使用主色调的半透明版本 */
   color: inherit; /* 文字颜色继承父元素，确保黑夜/白天模式正确显示 */
@@ -492,17 +490,13 @@ watch(() => themeStore.theme, (newTheme) => {
   border-radius: 4px;
 }
 
-/* ======================================================= */
-/* KaTeX 样式适配                                          */
-/* ======================================================= */
+/* KaTeX 样式适配 */
 .markdown-content :deep(.katex) {
   font-size: 1.1em;
   color: var(--text-color);
 }
 
-/* ======================================================= */
-/* 折叠元素 <details> 和 <summary> 样式适配                 */
-/* ======================================================= */
+/* 折叠元素 <details> 和 <summary> 样式适配 */
 .markdown-content :deep(details) {
   margin: 1.5em 0;
   padding: 1em 1.5em;
