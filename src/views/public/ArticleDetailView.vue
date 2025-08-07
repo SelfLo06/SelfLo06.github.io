@@ -76,16 +76,14 @@ import { ref, computed, onMounted, watch, nextTick } from 'vue';
 import { getArticleDetailById } from '@/api/public';
 import { useThemeStore } from '@/stores/theme';
 
-
 import { marked } from 'marked';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/atom-one-dark.css';
-import markedKatex from "marked-katex-extension"; // 引入 KaTeX 扩展
-import 'katex/dist/katex.min.css'; // 引入 KaTeX 的 CSS 样式
+import markedKatex from "marked-katex-extension";
+import 'katex/dist/katex.min.css';
 
 import PageHeader from '@/components/PageHeader.vue';
 
-// 从路由中获取 props
 const props = defineProps({
   id: {
     type: String,
@@ -102,16 +100,49 @@ const shouldShowComments = computed(() => {
 });
 
 // =======================================================
-// 【核心修改】配置 marked，使其同时支持代码高亮和 LaTeX
+// 定义 marked 的自定义扩展
+// =======================================================
+
+// 【新增】定义一个扩展，用于处理 ==高亮== 语法
+const markedHighlightExtension = {
+  name: 'mark',
+  level: 'inline',
+  start(src) {
+    return src.indexOf('==');
+  },
+  tokenizer(src, tokens) {
+    const rule = /^==([^=].*?)==/;
+    const match = rule.exec(src);
+
+    if (match) {
+      return {
+        type: 'mark',
+        raw: match[0],
+        text: match[1].trim(),
+      };
+    }
+  },
+  renderer(token) {
+    return `<mark>${token.text}</mark>`;
+  },
+};
+
+
+// =======================================================
+// 配置 marked：加载所有扩展并设置选项
 // =======================================================
 
 // 1. 使用 KaTeX 扩展
-// 这必须在 setOptions 之前调用
 marked.use(markedKatex({
-  throwOnError: false // `false` 会在解析失败时显示原始的 TeX 代码，而不是抛出错误
+  throwOnError: false
 }));
 
-// 2. 配置 marked 的其他选项
+// 2. 【新增】使用我们自定义的高亮扩展
+marked.use({
+  extensions: [markedHighlightExtension]
+});
+
+// 3. 配置 marked 的其他选项
 marked.setOptions({
   renderer: new marked.Renderer(),
   gfm: true,
@@ -124,10 +155,9 @@ marked.setOptions({
 });
 
 
-// 计算属性，用于将 Markdown + LaTeX 文本转换为 HTML
+// 计算属性，将 Markdown 文本转换为 HTML
 const renderedContent = computed(() => {
   if (article.value && article.value.contentMd) {
-    // marked.parse 现在会自动处理 Markdown 和 LaTeX 公式
     return marked.parse(article.value.contentMd);
   }
   return '';
@@ -174,9 +204,7 @@ const addCopyButtons = () => {
   });
 };
 
-/**
- * 加载/重新加载 Giscus 的函数
- */
+// 加载/重新加载 Giscus 的函数
 const loadGiscus = () => {
   const container = document.getElementById('giscus-container');
   if (!container) return;
@@ -225,26 +253,24 @@ const formatDate = (isoString) => {
   return isoString.split('T')[0];
 };
 
-// 组件挂载时，获取文章数据
+// --- 生命周期钩子和侦听器 ---
+
 onMounted(() => {
   fetchArticleDetail(props.id);
 });
 
-// 监听路由参数的变化来重新获取数据
 watch(() => props.id, (newId) => {
   if (newId) {
     fetchArticleDetail(newId);
   }
 });
 
-// 【核心修正】当渲染内容变化时，才去添加复制按钮
 watch(renderedContent, (newContent) => {
   if (newContent) {
     addCopyButtons();
   }
 });
 
-// 监听评论区容器是否出现，如果出现则加载 Giscus
 watch(shouldShowComments, (newValue) => {
   if (newValue) {
     nextTick(() => {
@@ -253,7 +279,6 @@ watch(shouldShowComments, (newValue) => {
   }
 });
 
-// 监听全局主题变化，实时通知 Giscus 切换主题
 watch(() => themeStore.theme, (newTheme) => {
   const giscusFrame = document.querySelector('iframe.giscus-frame');
   if (!giscusFrame) return;
@@ -266,6 +291,7 @@ watch(() => themeStore.theme, (newTheme) => {
 </script>
 
 <style scoped>
+/* 基本布局和卡片样式 */
 .article-detail-card {
   background-color: var(--card-bg-color);
   border-radius: var(--border-radius-main);
@@ -273,18 +299,17 @@ watch(() => themeStore.theme, (newTheme) => {
   margin-bottom: 2rem;
   overflow: hidden;
 }
-
 .article-body {
   padding: 1.5rem 2.5rem 2.5rem;
 }
 
+/* 标题和元信息 */
 .title-without-cover {
   font-size: 2.2rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
   color: var(--text-color);
 }
-
 .meta-tags {
   display: flex;
   flex-wrap: wrap;
@@ -293,7 +318,6 @@ watch(() => themeStore.theme, (newTheme) => {
   padding-bottom: 1.5rem;
   border-bottom: 1px solid var(--border-color);
 }
-
 .meta-tag {
   display: inline-flex;
   align-items: center;
@@ -304,18 +328,13 @@ watch(() => themeStore.theme, (newTheme) => {
   font-weight: 500;
   transition: all 0.2s ease;
 }
-
-.meta-tag i {
-  font-size: 0.9em;
-}
-
+.meta-tag i { font-size: 0.9em; }
 .tag-date { background-color: #e6f7ff; color: #1890ff; }
 .tag-date:hover { background-color: #bae7ff; }
 .tag-words { background-color: #ffeef2; color: #fb7299; }
 .tag-words:hover { background-color: #ffccd5; }
 .tag-category { background-color: #fffbe6; color: #faad14; }
 .tag-category:hover { background-color: #fff1b8; }
-
 .tag-item {
   background-color: rgba(128, 128, 128, 0.1);
   color: var(--text-color-secondary);
@@ -326,7 +345,7 @@ watch(() => themeStore.theme, (newTheme) => {
 }
 
 /* ======================================================= */
-/* Markdown 内容样式                                     */
+/* Markdown 内容通用样式                                   */
 /* ======================================================= */
 .markdown-content :deep(h1),
 .markdown-content :deep(h2),
@@ -341,21 +360,18 @@ watch(() => themeStore.theme, (newTheme) => {
 .markdown-content :deep(h2) {
   border-bottom: 1px solid var(--border-color);
 }
-
 .markdown-content :deep(p),
 .markdown-content :deep(ul),
 .markdown-content :deep(ol) {
   line-height: 1.8;
   color: var(--text-color);
 }
-
 .markdown-content :deep(blockquote) {
   border-left: 3px solid var(--primary-color);
   padding: 0.1em 1em;
   color: var(--text-color-secondary);
   background-color: rgba(73, 177, 245, 0.05);
 }
-
 .markdown-content :deep(:not(pre) > code) {
   background-color: rgba(128, 128, 128, 0.15);
   padding: .2em .4em;
@@ -364,7 +380,6 @@ watch(() => themeStore.theme, (newTheme) => {
   border-radius: 6px;
   color: var(--text-color);
 }
-
 .markdown-content :deep(table) {
   border-collapse: collapse;
 }
@@ -380,7 +395,14 @@ watch(() => themeStore.theme, (newTheme) => {
 .markdown-content :deep(tr:nth-child(2n)) {
   background-color: rgba(128, 128, 128, 0.05);
 }
+.markdown-content :deep(img) {
+  max-width: 100%;
+  border-radius: 4px;
+}
 
+/* ======================================================= */
+/* 代码块样式 (Highlight.js)                              */
+/* ======================================================= */
 .markdown-content :deep(pre) {
   position: relative;
   background: #2d3748;
@@ -394,7 +416,6 @@ watch(() => themeStore.theme, (newTheme) => {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
-
 .markdown-content :deep(pre::before) {
   content: '';
   position: absolute;
@@ -407,7 +428,6 @@ watch(() => themeStore.theme, (newTheme) => {
   border-bottom-left-radius: 16px;
   z-index: 1;
 }
-
 .markdown-content :deep(pre::after) {
   content: '';
   position: absolute;
@@ -418,7 +438,6 @@ watch(() => themeStore.theme, (newTheme) => {
   background: rgba(255, 255, 255, 0.2);
   z-index: 2;
 }
-
 .markdown-content :deep(pre code) {
   background: transparent;
   padding: 0;
@@ -430,7 +449,6 @@ watch(() => themeStore.theme, (newTheme) => {
   position: relative;
   z-index: 3;
 }
-
 .markdown-content :deep(.copy-code-btn) {
   position: absolute;
   top: 12px;
@@ -451,14 +469,12 @@ watch(() => themeStore.theme, (newTheme) => {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   backdrop-filter: blur(4px);
 }
-
 .markdown-content :deep(.copy-code-btn:hover) {
   background: rgba(45, 55, 72, 1);
   color: #ffffff;
   border-color: rgba(255, 255, 255, 0.3);
   transform: translateY(-1px);
 }
-
 .markdown-content :deep(.hljs-comment) { color: #718096; font-style: italic; }
 .markdown-content :deep(.hljs-keyword) { color: #9f7aea; }
 .markdown-content :deep(.hljs-string) { color: #68d391; }
@@ -466,26 +482,27 @@ watch(() => themeStore.theme, (newTheme) => {
 .markdown-content :deep(.hljs-number) { color: #fbb6ce; }
 .markdown-content :deep(.hljs-variable) { color: #fc8181; }
 
-.markdown-content :deep(img) {
-  max-width: 100%;
+/* ======================================================= */
+/* 【新增】为 <mark> 高亮标签适配主题样式                  */
+/* ======================================================= */
+.markdown-content :deep(mark) {
+  background-color: rgba(73, 177, 245, 0.2); /* 使用主色调的半透明版本 */
+  color: inherit; /* 文字颜色继承父元素，确保黑夜/白天模式正确显示 */
+  padding: 0.1em 0.3em;
   border-radius: 4px;
 }
 
 /* ======================================================= */
-/* 【新增】KaTeX 样式适配，确保公式颜色跟随主题          */
+/* KaTeX 样式适配                                          */
 /* ======================================================= */
 .markdown-content :deep(.katex) {
-  font-size: 1.1em; /* 可以微调公式的默认大小 */
-  color: var(--text-color); /* 让公式颜色跟随主题的文字颜色 */
+  font-size: 1.1em;
+  color: var(--text-color);
 }
 
-
-
 /* ======================================================= */
-/* 【最终版】折叠元素 <details> 和 <summary> 样式适配       */
+/* 折叠元素 <details> 和 <summary> 样式适配                 */
 /* ======================================================= */
-
-/* 1. 设置容器样式 */
 .markdown-content :deep(details) {
   margin: 1.5em 0;
   padding: 1em 1.5em;
@@ -493,32 +510,23 @@ watch(() => themeStore.theme, (newTheme) => {
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-main);
 }
-
-/* 2. 设置标题 <summary> 的样式 */
 .markdown-content :deep(summary) {
   font-weight: 600;
   cursor: pointer;
-  color: var(--text-color); /* 关键：让标题颜色跟随主题 */
+  color: var(--text-color);
   transition: color 0.2s ease;
   margin-bottom: 0.5em;
 }
 .markdown-content :deep(summary:hover) {
   color: var(--primary-color);
 }
-
-/* 3. 【最重要的一步】强制覆盖折叠内容区域所有文本的颜色 */
-/*
-   我们使用 * (通用选择器) 来选中 <details> 内部的所有子元素，
-   并强制它们继承父元素 <details> 的颜色。
-   如果还不行，就用 !important。
-*/
 .markdown-content :deep(details > *) {
-  color: var(--text-color); /* 尝试常规方式 */
-  /* 如果上面的代码在刷新后依然无效，请取消下面这行的注释 */
-  /* color: var(--text-color) !important;  */
+  color: var(--text-color);
 }
 
-/* 分割线和Giscus容器 */
+/* ======================================================= */
+/* 评论区样式                                            */
+/* ======================================================= */
 .divider {
   margin: 40px 0;
   border-bottom: 1px solid var(--border-color);
