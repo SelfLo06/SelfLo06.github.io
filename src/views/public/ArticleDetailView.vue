@@ -479,6 +479,50 @@ watch(() => themeStore.theme, (newTheme) => {
   color: var(--text-color); /* 让公式颜色跟随主题的文字颜色 */
 }
 
+/* ======================================================= */
+/* 折叠元素 <details> 和 <summary> 样式适配       */
+/* ======================================================= */
+
+/* 为整个折叠块添加边框和背景 */
+.markdown-content :deep(details) {
+  margin: 1.5em 0;
+  padding: 1em 1.5em;
+  background-color: rgba(128, 128, 128, 0.05);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-main);
+  /* 在父元素上直接设置颜色，期望子元素能够继承 */
+  color: var(--text-color);
+}
+
+/* 再次为折叠标题 <summary> 明确设置样式 */
+.markdown-content :deep(summary) {
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text-color); /* 再次声明，提高优先级 */
+  transition: color 0.2s ease;
+  /* 如果展开了，给标题和内容之间增加一点间距 */
+  margin-bottom: 0.5em;
+}
+
+/* 【核心修复】使用通用后代选择器，强制覆盖内部所有常见标签的颜色 */
+.markdown-content :deep(details p),
+.markdown-content :deep(details li),
+.markdown-content :deep(details div),
+.markdown-content :deep(details span) {
+  color: var(--text-color);
+}
+
+/* 鼠标悬停在标题上时，改变颜色以提供视觉反馈 */
+.markdown-content :deep(summary:hover) {
+  color: var(--primary-color);
+}
+
+/* 确保悬停效果也能影响到标题的三角符号 */
+.markdown-content :deep(summary:hover *) {
+  color: inherit;
+}
+
+
 /* 分割线和Giscus容器 */
 .divider {
   margin: 40px 0;
