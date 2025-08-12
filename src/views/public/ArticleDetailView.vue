@@ -115,19 +115,24 @@ const md = new MarkdownIt({
   linkify: true, // 自动将链接文字转换为链接
   breaks: true,  // 将 \n 转换为 <br>
 
-  // 2. 配置代码高亮
   highlight: function (str, lang) {
-    if (lang && hljs.getLanguage(lang)) {
-      try {
-        // 返回 hljs 处理过的 HTML
-        return '<pre class="hljs"><code>' +
-          hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
-          '</code></pre>';
-      } catch (__) {}
-    }
-    // 如果没有指定语言或高亮失败，则返回原始代码
-    return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
+    // 简单包装，不进行语法高亮
+    return '<pre class="code-block"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
   }
+
+  // // 2. 配置代码高亮
+  // highlight: function (str, lang) {
+  //   if (lang && hljs.getLanguage(lang)) {
+  //     try {
+  //       // 返回 hljs 处理过的 HTML
+  //       return '<pre class="hljs"><code>' +
+  //         hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
+  //         '</code></pre>';
+  //     } catch (__) {}
+  //   }
+  //   // 如果没有指定语言或高亮失败，则返回原始代码
+  //   return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
+  // }
 });
 
 // 3. 使用插件
@@ -148,7 +153,8 @@ const renderedContent = computed(() => {
 const addCopyButtons = () => {
   nextTick(() => {
     // 【修改】选择器稍微调整以匹配 markdown-it 的输出
-    const codeBlocks = document.querySelectorAll('.markdown-content pre.hljs');
+    // const codeBlocks = document.querySelectorAll('.markdown-content pre.hljs');
+    const codeBlocks = document.querySelectorAll('.markdown-content pre.code-block');
     codeBlocks.forEach((block) => {
       if (block.querySelector('.copy-code-btn')) return;
       const button = document.createElement('button');
