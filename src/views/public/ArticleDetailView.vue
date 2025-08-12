@@ -505,12 +505,72 @@ watch(() => themeStore.theme, (newTheme) => {
   border-radius: 4px;
 }
 
-/* KaTeX 样式适配 */
+/* 修复KaTeX样式，确保下标正常显示 */
 .markdown-content :deep(.katex) {
-  font-size: 1.1em;
-  color: var(--text-color);
+  font-size: 1.1em !important;
+  color: var(--text-color) !important;
 }
 
+.markdown-content :deep(.katex-display) {
+  margin: 1em 0 !important;
+  text-align: center !important;
+}
+
+/* 确保KaTeX的上标下标正常显示 */
+.markdown-content :deep(.katex .vlist-t) {
+  display: inline-table !important;
+}
+
+.markdown-content :deep(.katex .vlist-r) {
+  display: table-row !important;
+}
+
+.markdown-content :deep(.katex .vlist) {
+  display: table-cell !important;
+  vertical-align: baseline !important;
+}
+
+.markdown-content :deep(.katex .msupsub) {
+  text-align: left !important;
+}
+
+/* 修复表格样式 */
+.markdown-content :deep(table) {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.5em 0;
+  background-color: transparent;
+}
+
+.markdown-content :deep(thead) {
+  background-color: var(--el-fill-color-light);
+}
+
+.markdown-content :deep(th),
+.markdown-content :deep(td) {
+  border: 1px solid var(--border-color);
+  padding: 0.6em 1em;
+  color: var(--text-color);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.markdown-content :deep(th) {
+  background-color: var(--el-fill-color-light);
+  font-weight: 600;
+}
+
+.markdown-content :deep(tbody tr:nth-child(odd)) {
+  background-color: transparent;
+}
+
+.markdown-content :deep(tbody tr:nth-child(even)) {
+  background-color: var(--el-fill-color-lighter);
+}
+
+.markdown-content :deep(tbody tr:hover) {
+  background-color: var(--el-fill-color-light);
+}
 /* 折叠元素 <details> 和 <summary> 样式适配 */
 .markdown-content :deep(details) {
   margin: 1.5em 0;
