@@ -117,13 +117,26 @@ const md = new MarkdownIt({
   html: true,
   linkify: true,
   breaks: true,
+  // highlight: function (str, lang) {
+  //   if (lang && hljs.getLanguage(lang)) {
+  //     try {
+  //       return '<pre class="hljs"><code>' +
+  //         hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
+  //         '</code></pre>';
+  //     } catch (__) {}
+  //   }
+  //   return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
+  // }
+  // 修复highlight函数的catch块
   highlight: function (str, lang) {
     if (lang && hljs.getLanguage(lang)) {
       try {
         return '<pre class="hljs"><code>' +
           hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
           '</code></pre>';
-      } catch (__) {}
+      } catch (error) {
+        console.warn('代码高亮失败:', error);
+      }
     }
     return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
   }
@@ -383,7 +396,7 @@ watch(() => themeStore.theme, (newTheme) => {
   border-radius: 4px;
 }
 
-/* 恢复highlight.js的代码块样式 */
+/*
 .markdown-content :deep(pre.hljs) {
   position: relative;
   background: #2d3748;
@@ -430,7 +443,56 @@ watch(() => themeStore.theme, (newTheme) => {
   border-color: rgba(255, 255, 255, 0.3);
   transform: translateY(-1px);
 }
+*/
 
+/* 修复代码块样式以适配主题 */
+.markdown-content :deep(pre.hljs) {
+  position: relative;
+  background: var(--el-bg-color-page);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  margin: 2em 0;
+  padding: 1.5em;
+  overflow-x: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.markdown-content :deep(pre.hljs code) {
+  font-family: 'SF Mono', 'Monaco', 'Consolas', 'Roboto Mono', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  color: var(--text-color);
+}
+
+.markdown-content :deep(.copy-code-btn) {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: var(--el-bg-color);
+  color: var(--text-color-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  backdrop-filter: blur(4px);
+}
+
+.markdown-content :deep(.copy-code-btn:hover) {
+  background: var(--el-bg-color-overlay);
+  color: var(--text-color);
+  transform: translateY(-1px);
+}
 
 /* ======================================================= */
 /* 扩展语法样式 (高亮、公式、折叠块)                    */
