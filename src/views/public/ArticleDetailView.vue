@@ -108,13 +108,24 @@ const shouldShowComments = computed(() => {
 // 【全新】配置 markdown-it
 // =======================================================
 
+// 恢复highlight.js导入
+import hljs from 'highlight.js';
+import 'highlight.js/styles/atom-one-dark.css';
+
+// 恢复markdown-it的highlight配置
 const md = new MarkdownIt({
   html: true,
   linkify: true,
   breaks: true,
-  highlight: function (str) {
-    // 简单包装，不进行语法高亮
-    return '<pre class="code-block"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
+  highlight: function (str, lang) {
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        return '<pre class="hljs"><code>' +
+          hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
+          '</code></pre>';
+      } catch (__) {}
+    }
+    return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
   }
 });
 
@@ -136,7 +147,7 @@ const renderedContent = computed(() => {
 const addCopyButtons = () => {
   nextTick(() => {
     // 【修改】选择器稍微调整以匹配 markdown-it 的输出
-    const codeBlocks = document.querySelectorAll('.markdown-content pre.code-block');
+    const codeBlocks = document.querySelectorAll('.markdown-content pre.hljs');
     codeBlocks.forEach((block) => {
       if (block.querySelector('.copy-code-btn')) return;
       const button = document.createElement('button');
@@ -370,6 +381,54 @@ watch(() => themeStore.theme, (newTheme) => {
 .markdown-content :deep(img) {
   max-width: 100%;
   border-radius: 4px;
+}
+
+/* 恢复highlight.js的代码块样式 */
+.markdown-content :deep(pre.hljs) {
+  position: relative;
+  background: #2d3748;
+  border-radius: 16px;
+  margin: 2em 0;
+  padding: 1.5em;
+  overflow-x: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.markdown-content :deep(pre.hljs code) {
+  font-family: 'SF Mono', 'Monaco', 'Consolas', 'Roboto Mono', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+}
+
+.markdown-content :deep(.copy-code-btn) {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: rgba(45, 55, 72, 0.9);
+  color: #a0aec0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  backdrop-filter: blur(4px);
+}
+
+.markdown-content :deep(.copy-code-btn:hover) {
+  background: rgba(45, 55, 72, 1);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
 }
 
 
