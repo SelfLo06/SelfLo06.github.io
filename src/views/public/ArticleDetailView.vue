@@ -445,7 +445,7 @@ watch(() => themeStore.theme, (newTheme) => {
 }
 */
 
-/* 修复代码块样式以适配主题 */
+/* 修复代码块主题适配问题 */
 .markdown-content :deep(pre.hljs) {
   position: relative;
   background: var(--el-bg-color-page);
@@ -457,6 +457,12 @@ watch(() => themeStore.theme, (newTheme) => {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
+/* 代码块在暗色主题下使用深色背景 */
+[data-theme="dark"] .markdown-content :deep(pre.hljs) {
+  background: #1e1e1e;
+  border-color: #3a3a3a;
+}
+
 .markdown-content :deep(pre.hljs code) {
   font-family: 'SF Mono', 'Monaco', 'Consolas', 'Roboto Mono', monospace;
   font-size: 14px;
@@ -465,6 +471,11 @@ watch(() => themeStore.theme, (newTheme) => {
   padding: 0;
   border-radius: 0;
   color: var(--text-color);
+}
+
+/* 暗色主题下的代码颜色 */
+[data-theme="dark"] .markdown-content :deep(pre.hljs code) {
+  color: #e1e4e8;
 }
 
 .markdown-content :deep(.copy-code-btn) {
@@ -534,7 +545,7 @@ watch(() => themeStore.theme, (newTheme) => {
   text-align: left !important;
 }
 
-/* 修复表格样式 */
+/* 修复表格样式以适配主题 */
 .markdown-content :deep(table) {
   border-collapse: collapse;
   width: 100%;
@@ -571,6 +582,25 @@ watch(() => themeStore.theme, (newTheme) => {
 .markdown-content :deep(tbody tr:hover) {
   background-color: var(--el-fill-color-light);
 }
+
+/* 暗色主题下的表格特殊处理 */
+[data-theme="dark"] .markdown-content :deep(th) {
+  background-color: #3a3a3a;
+  color: #e1e4e8;
+}
+
+[data-theme="dark"] .markdown-content :deep(td) {
+  color: #e1e4e8;
+}
+
+[data-theme="dark"] .markdown-content :deep(tbody tr:nth-child(even)) {
+  background-color: #2a2a2a;
+}
+
+[data-theme="dark"] .markdown-content :deep(tbody tr:hover) {
+  background-color: #404040;
+}
+
 /* 折叠元素 <details> 和 <summary> 样式适配 */
 .markdown-content :deep(details) {
   margin: 1.5em 0;
