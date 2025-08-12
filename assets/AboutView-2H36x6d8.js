@@ -1,4 +1,4 @@
-import{M as s,i as n,m as r,P as c}from"./PageHeader-DwQp5uHR.js";import{_ as i,r as l,m as u,c as d,f as m,j as t,F as _,h as p}from"./index-C6Rl8P3W.js";import"./_commonjsHelpers-CqkleIqs.js";const f={class:"about-view card"},g=["innerHTML"],v={__name:"AboutView",setup(b){const a=l(`
+import{M as s,i as n,m as r,P as c}from"./PageHeader-BEJJ_Ztw.js";import{_ as i,r as l,m as u,c as d,f as m,j as t,F as _,h as p}from"./index-CxC2JA_h.js";import"./_commonjsHelpers-CqkleIqs.js";const f={class:"about-view card"},g=["innerHTML"],v={__name:"AboutView",setup(b){const a=l(`
 Hiii, 我是 selflo，一名来自**南京大学智能软件**的学生！ (^▽^)
 
 这个博客诞生于我的大一暑假（2025.7.3 - 2025.7.8），是我给自己布置的一份复习和巩固知识的暑期作业，也是一个**从零开始，完全手写**~(存疑)~的项目。
