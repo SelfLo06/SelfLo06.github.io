@@ -82,7 +82,6 @@ import mdMark from 'markdown-it-mark';
 import mdKatex from 'markdown-it-katex';
 
 // 代码高亮库和样式
-import hljs from 'highlight.js';
 import 'highlight.js/styles/atom-one-dark.css';
 
 // KaTeX 的 CSS 样式 (markdown-it-katex 需要它)
@@ -109,30 +108,14 @@ const shouldShowComments = computed(() => {
 // 【全新】配置 markdown-it
 // =======================================================
 
-// 1. 实例化 markdown-it
 const md = new MarkdownIt({
-  html: true,    // 允许解析内容中的 HTML 标签
-  linkify: true, // 自动将链接文字转换为链接
-  breaks: true,  // 将 \n 转换为 <br>
-
-  highlight: function (str, lang) {
+  html: true,
+  linkify: true,
+  breaks: true,
+  highlight: function (str) {
     // 简单包装，不进行语法高亮
     return '<pre class="code-block"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
   }
-
-  // // 2. 配置代码高亮
-  // highlight: function (str, lang) {
-  //   if (lang && hljs.getLanguage(lang)) {
-  //     try {
-  //       // 返回 hljs 处理过的 HTML
-  //       return '<pre class="hljs"><code>' +
-  //         hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
-  //         '</code></pre>';
-  //     } catch (__) {}
-  //   }
-  //   // 如果没有指定语言或高亮失败，则返回原始代码
-  //   return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
-  // }
 });
 
 // 3. 使用插件
@@ -153,7 +136,6 @@ const renderedContent = computed(() => {
 const addCopyButtons = () => {
   nextTick(() => {
     // 【修改】选择器稍微调整以匹配 markdown-it 的输出
-    // const codeBlocks = document.querySelectorAll('.markdown-content pre.hljs');
     const codeBlocks = document.querySelectorAll('.markdown-content pre.code-block');
     codeBlocks.forEach((block) => {
       if (block.querySelector('.copy-code-btn')) return;
@@ -390,61 +372,6 @@ watch(() => themeStore.theme, (newTheme) => {
   border-radius: 4px;
 }
 
-/* ======================================================= */
-/* 代码块样式 (Highlight.js)                              */
-/* ======================================================= */
-/* 【调整】修改选择器以匹配 markdown-it 的输出，并简化样式 */
-.markdown-content :deep(pre.hljs) {
-  position: relative; /* 为复制按钮定位 */
-  background: #2d3748;
-  border-radius: 16px;
-  margin: 2em 0;
-  padding: 1.5em;
-  overflow-x: auto;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-.markdown-content :deep(pre.hljs code) {
-  font-family: 'SF Mono', 'Monaco', 'Consolas', 'Roboto Mono', monospace;
-  font-size: 14px;
-  line-height: 1.6;
-  color: #e2e8f0;
-  background: transparent;
-  padding: 0;
-  border-radius: 0;
-}
-.markdown-content :deep(.copy-code-btn) {
-  position: absolute;
-  top: 12px;
-  right: 16px;
-  background: rgba(45, 55, 72, 0.9);
-  color: #a0aec0;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  padding: 6px 12px;
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  backdrop-filter: blur(4px);
-}
-.markdown-content :deep(.copy-code-btn:hover) {
-  background: rgba(45, 55, 72, 1);
-  color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-1px);
-}
-.markdown-content :deep(.hljs-comment) { color: #718096; font-style: italic; }
-.markdown-content :deep(.hljs-keyword) { color: #9f7aea; }
-.markdown-content :deep(.hljs-string) { color: #68d391; }
-.markdown-content :deep(.hljs-function) { color: #63b3ed; }
-.markdown-content :deep(.hljs-number) { color: #fbb6ce; }
-.markdown-content :deep(.hljs-variable) { color: #fc8181; }
 
 /* ======================================================= */
 /* 扩展语法样式 (高亮、公式、折叠块)                    */
