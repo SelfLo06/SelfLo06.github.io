@@ -57,40 +57,6 @@ md.use(mdKatex);
 const aboutContentMd = ref(`
 Hiii, 我是 selflo，一名来自**南京大学智能软件**的学生！ (^▽^)
 
-| 技能 | 熟练度 | 备注 |
-|------|--------|------|
-| JavaScript | ⭐| 主要开发语言 |
-| Vue.js | ⭐ | 前端框架 |
-| Node.js | ⭐ | 后端开发 |
-
-## 代码示例测试
-
-这里是一些代码示例来测试代码块的主题切换功能：
-
-\`\`\`javascript
-// JavaScript 示例
-function greetUser(name) {
-  const message = \`Hello, \${name}!\`;
-  console.log(message);
-  return message;
-}
-
-greetUser('selflo');
-\`\`\`
-
-\`\`\`css
-/* CSS 样式示例 */
-.dark-theme {
-  background-color: #1e1e1e;
-  color: #e1e4e8;
-}
-
-.code-block {
-  border-radius: 8px;
-  padding: 1rem;
-}
-\`\`\`
-
 这个博客诞生于我的大一暑假（2025.7.3 - 2025.7.8），是我给自己布置的一份复习和巩固知识的暑期作业，也是一个**从零开始，完全手写**(存疑)的项目。
 
 在UI设计上，很大程度上参考了优秀的 Hexo 主题，并在此基础上进行了简化和二次创作。

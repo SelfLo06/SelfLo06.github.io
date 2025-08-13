@@ -447,6 +447,17 @@ watch(() => themeStore.theme, (newTheme) => {
   transform: translateY(-1px);
 }
 
+/* 暗色主题下的复制按钮样式 */
+.markdown-content.dark-theme :deep(.copy-code-btn) {
+  background: #2d2d2d;
+  color: #8b949e;
+  border-color: #3a3a3a;
+}
+
+.markdown-content.dark-theme :deep(.copy-code-btn:hover) {
+  background: #3a3a3a;
+  color: #c9d1d9;
+}
 /* ======================================================= */
 /* 扩展语法样式 (高亮、公式、折叠块)                    */
 /* ======================================================= */
