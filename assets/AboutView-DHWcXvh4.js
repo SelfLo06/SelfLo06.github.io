@@ -1,5 +1,11 @@
-import{M as s,i as n,m as r,P as c}from"./PageHeader-D0lLmg5J.js";import{_ as i,r as l,m as u,c as d,f as m,j as t,F as _,h as p}from"./index-BQnUNSK1.js";import"./_commonjsHelpers-CqkleIqs.js";const f={class:"about-view card"},g=["innerHTML"],v={__name:"AboutView",setup(b){const a=l(`
+import{M as r,i as n,m as c,P as i}from"./PageHeader-D6dObFYd.js";import{_ as l,l as u,r as m,m as d,c as _,f as p,j as t,n as f,u as h,F as v,h as b}from"./index-BJIIAuw7.js";import"./_commonjsHelpers-CqkleIqs.js";const g={class:"about-view card"},k=["innerHTML"],C={__name:"AboutView",setup(H){const a=u(),s=m(`
 Hiii, 我是 selflo，一名来自**南京大学智能软件**的学生！ (^▽^)
+
+| 技能 | 熟练度 | 备注 |
+|------|--------|------|
+| JavaScript | ⭐| 主要开发语言 |
+| Vue.js | ⭐ | 前端框架 |
+| Node.js | ⭐ | 后端开发 |
 
 这个博客诞生于我的大一暑假（2025.7.3 - 2025.7.8），是我给自己布置的一份复习和巩固知识的暑期作业，也是一个**从零开始，完全手写**~(存疑)~的项目。
 
@@ -10,4 +16,4 @@ Hiii, 我是 selflo，一名来自**南京大学智能软件**的学生！ (^▽
 我也不知道这个博客能更新多久~（笑，明明刚创建就说这种话）~，但真心希望它能记录下我的成长轨迹。
 
 ==总之，非常感谢你愿意点开我的博客来看！== ヾ(o´▽\`o)ﾉ
-`),e=new s({html:!0,linkify:!0,breaks:!0});e.use(n),e.use(r);const o=u(()=>e.render(a.value));return(h,k)=>(p(),d(_,null,[m(c,{title:"关于我","cover-image":"https://cdn.jsdelivr.net/gh/SelfLo06/MyImages@main/background.jpg"}),t("div",f,[t("div",{class:"content",innerHTML:o.value},null,8,g)])],64))}},x=i(v,[["__scopeId","data-v-ca9950a2"]]);export{x as default};
+`),e=new r({html:!0,linkify:!0,breaks:!0});e.use(n),e.use(c);const o=d(()=>e.render(s.value));return(M,V)=>(b(),_(v,null,[p(i,{title:"关于我","cover-image":"https://cdn.jsdelivr.net/gh/SelfLo06/MyImages@main/background.jpg"}),t("div",g,[t("div",{class:f(["content",{"dark-theme":h(a).theme==="dark"}]),innerHTML:o.value},null,10,k)])],64))}},I=l(C,[["__scopeId","data-v-b8244439"]]);export{I as default};
