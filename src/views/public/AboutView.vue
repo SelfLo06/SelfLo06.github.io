@@ -5,23 +5,32 @@
     cover-image="https://cdn.jsdelivr.net/gh/SelfLo06/MyImages@main/background.jpg"
   />
   <div class="about-view card">
-    <!-- v-html 的目标保持不变 -->
-    <div class="content" v-html="aboutContentHtml"></div>
+    <!-- 添加动态类名绑定 -->
+    <div class="content" :class="{ 'dark-theme': themeStore.theme === 'dark' }" v-html="aboutContentHtml"></div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import PageHeader from '@/components/PageHeader.vue';
+import { ref, computed } from 'vue'
+import PageHeader from '@/components/PageHeader.vue'
+import { useThemeStore } from '@/stores/theme' // 导入主题store
 
-// 【第1步：替换 import】
-import MarkdownIt from 'markdown-it';
-import mdMark from 'markdown-it-mark';
-import mdKatex from 'markdown-it-katex';
-import 'katex/dist/katex.min.css';
+// 获取主题store实例
+const themeStore = useThemeStore()
+
+import MarkdownIt from 'markdown-it'
+import mdMark from 'markdown-it-mark'
+import mdKatex from 'markdown-it-katex'
+import 'katex/dist/katex.min.css'
 
 const aboutContentMd = ref(`
 Hiii, 我是 selflo，一名来自**南京大学智能软件**的学生！ (^▽^)
+
+| 技能 | 熟练度 | 备注 |
+|------|--------|------|
+| JavaScript | ⭐| 主要开发语言 |
+| Vue.js | ⭐ | 前端框架 |
+| Node.js | ⭐ | 后端开发 |
 
 这个博客诞生于我的大一暑假（2025.7.3 - 2025.7.8），是我给自己布置的一份复习和巩固知识的暑期作业，也是一个**从零开始，完全手写**~(存疑)~的项目。
 
@@ -32,28 +41,23 @@ Hiii, 我是 selflo，一名来自**南京大学智能软件**的学生！ (^▽
 我也不知道这个博客能更新多久~（笑，明明刚创建就说这种话）~，但真心希望它能记录下我的成长轨迹。
 
 ==总之，非常感谢你愿意点开我的博客来看！== ヾ(o´▽\`o)ﾉ
-`);
+`)
 
-// 【第2步：实例化并配置 markdown-it】
 const md = new MarkdownIt({
   html: true,
   linkify: true,
   breaks: true,
-});
+})
 
-// 【第3步：使用插件】
-md.use(mdMark); // 这样 "关于我" 页面也能用 ==高亮==
-md.use(mdKatex); // 也能用 LaTeX 公式
+md.use(mdMark)
+md.use(mdKatex)
 
-// 【第4步：修改计算属性】
 const aboutContentHtml = computed(() => {
-  // 将 marked(...) 替换为 md.render(...)
-  return md.render(aboutContentMd.value);
-});
+  return md.render(aboutContentMd.value)
+})
 </script>
 
 <style scoped>
-/* 样式部分完全不需要修改，可以保持原样 */
 .page-title {
   font-size: 2.2rem;
   font-weight: 600;
@@ -98,5 +102,77 @@ const aboutContentHtml = computed(() => {
   border-radius: 4px;
   font-family: 'Courier New', Courier, monospace;
   font-size: 0.95em;
+}
+
+/* 亮色主题下的表格样式 */
+.content :deep(table) {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.5em 0;
+  background-color: transparent;
+}
+
+.content :deep(thead) {
+  background-color: var(--el-fill-color-light);
+}
+
+.content :deep(th),
+.content :deep(td) {
+  border: 1px solid var(--border-color);
+  padding: 0.6em 1em;
+  color: var(--text-color);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.content :deep(th) {
+  background-color: var(--el-fill-color-light);
+  font-weight: 600;
+}
+
+.content :deep(tbody tr:nth-child(odd)) {
+  background-color: transparent;
+}
+
+.content :deep(tbody tr:nth-child(even)) {
+  background-color: var(--el-fill-color-lighter);
+}
+
+.content :deep(tbody tr:hover) {
+  background-color: var(--el-fill-color-light);
+}
+
+/* 使用动态类名方式设置暗色主题下的表格样式 */
+.content.dark-theme :deep(table) {
+  background-color: transparent;
+  border-color: #444;
+}
+
+.content.dark-theme :deep(thead) {
+  background-color: #2d2d2d;
+}
+
+.content.dark-theme :deep(th) {
+  background-color: #2d2d2d;
+  color: #e1e4e8;
+  border-color: #444;
+}
+
+.content.dark-theme :deep(td) {
+  color: #e1e4e8;
+  border-color: #444;
+  background-color: transparent;
+}
+
+.content.dark-theme :deep(tbody tr:nth-child(even)) {
+  background-color: #2a2a2a;
+}
+
+.content.dark-theme :deep(tbody tr:nth-child(odd)) {
+  background-color: #202020;
+}
+
+.content.dark-theme :deep(tbody tr:hover) {
+  background-color: #303030;
 }
 </style>
