@@ -2,7 +2,7 @@
 <template>
   <PageHeader
     title="关于我"
-    cover-image="https://cdn.jsdelivr.net/gh/SelfLo06/MyImages@main/background.jpg"
+    cover-image="https://images.selflo06.xyz/background-old.jpg"
   />
   <div class="about-view card">
     <!-- 添加动态类名绑定 -->
