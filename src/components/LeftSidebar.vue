@@ -69,10 +69,26 @@
            :key="social.name"
            :href="social.url"
            target="_blank"
-           :class="['social-icon', social.className]">
+           :class="['social-icon', social.className]"
+           @click="social.isQQ ? handleQQClick($event) : (social.isBilibili ? handleBilibiliClick($event) : null)">
           <i :class="social.icon"></i>
         </a>
         <ThemeToggle />
+      </div>
+    </div>
+    <!-- QQ弹窗 -->
+    <div v-if="showQQPopup" class="popup-overlay" @click="showQQPopup = false">
+      <div class="popup-container" @click.stop>
+        <div class="popup-content">不让加 <(▰˘◡˘▰)></div>
+        <button class="popup-close" @click="showQQPopup = false">关闭</button>
+      </div>
+    </div>
+
+    <!-- B站弹窗 -->
+    <div v-if="showBilibiliPopup" class="popup-overlay" @click="showBilibiliPopup = false">
+      <div class="popup-container" @click.stop>
+        <div class="popup-content">不让看 <(▰˘◡˘▰)></div>
+        <button class="popup-close" @click="showBilibiliPopup = false">关闭</button>
       </div>
     </div>
   </div>
@@ -96,10 +112,27 @@ const navMenu = ref([
 
 // 社交链接数据
 const socialLinks = ref([
-  { name: 'QQ', url: 'tencent://AddContact/?fromId=45&fromSubId=1&subcmd=all&uin=3505295092', icon: 'fa-brands fa-qq', className: 'social-qq' },
-  { name: '哔哩哔哩', url: 'https://space.bilibili.com/365240798', icon: 'fa-brands fa-bilibili', className: 'social-bilibili' },
+  { name: 'QQ', url: 'javascript:void(0)', icon: 'fa-brands fa-qq', className: 'social-qq', isQQ: true },
+  { name: '哔哩哔哩', url: 'javascript:void(0)', icon: 'fa-brands fa-bilibili', className: 'social-bilibili', isBilibili: true },
   { name: 'GitHub', url: 'https://github.com/SelfLo06/', icon: 'fa-brands fa-github', className: 'social-github' }
-  ]);
+]);
+
+// 控制QQ弹窗的显示
+const showQQPopup = ref(false);
+// 控制B站弹窗的显示
+const showBilibiliPopup = ref(false);
+
+// QQ点击处理函数
+const handleQQClick = (event) => {
+  event.preventDefault(); // 阻止默认链接行为
+  showQQPopup.value = true;
+};
+
+// B站点击处理函数
+const handleBilibiliClick = (event) => {
+  event.preventDefault(); // 阻止默认链接行为
+  showBilibiliPopup.value = true;
+};
 
 // 为统计数据创建一个新的响应式变量，并提供初始值
 const stats = ref({
@@ -377,5 +410,52 @@ onMounted(async () => {
 .social-github:hover {
   background-color: #24292E;
   color: white;
+}
+
+/* 弹窗样式 */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-container {
+  background-color: var(--card-bg-color);
+  border-radius: var(--border-radius-main);
+  padding: 2rem;
+  box-shadow: var(--card-shadow);
+  max-width: 300px;
+  width: 100%;
+  text-align: center;
+  animation: popup-fade 0.3s ease;
+}
+
+.popup-content {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-color);
+  font-weight: bold;
+}
+
+.popup-close {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.5rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+.popup-close:hover {
+  opacity: 0.9;
 }
 </style>
