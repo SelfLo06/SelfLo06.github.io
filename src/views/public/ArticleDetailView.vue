@@ -50,8 +50,10 @@
 
           </div>
 
-          <!-- 渲染Markdown文章正文 -->
-          <div class="markdown-content" v-html="renderedContent"></div>
+          <!-- 在渲染Markdown文章正文的div上添加动态类名 -->
+          <div class="markdown-content"
+               :class="{ 'dark-theme': themeStore.theme === 'dark' }"
+               v-html="renderedContent"></div>
         </div>
       </div>
 
@@ -396,59 +398,10 @@ watch(() => themeStore.theme, (newTheme) => {
   border-radius: 4px;
 }
 
-/*
-.markdown-content :deep(pre.hljs) {
-  position: relative;
-  background: #2d3748;
-  border-radius: 16px;
-  margin: 2em 0;
-  padding: 1.5em;
-  overflow-x: auto;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-}
-
-.markdown-content :deep(pre.hljs code) {
-  font-family: 'SF Mono', 'Monaco', 'Consolas', 'Roboto Mono', monospace;
-  font-size: 14px;
-  line-height: 1.6;
-  background: transparent;
-  padding: 0;
-  border-radius: 0;
-}
-
-.markdown-content :deep(.copy-code-btn) {
-  position: absolute;
-  top: 12px;
-  right: 16px;
-  background: rgba(45, 55, 72, 0.9);
-  color: #a0aec0;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  padding: 6px 12px;
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  backdrop-filter: blur(4px);
-}
-
-.markdown-content :deep(.copy-code-btn:hover) {
-  background: rgba(45, 55, 72, 1);
-  color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-1px);
-}
-*/
-
 /* 修复代码块主题适配问题 */
 .markdown-content :deep(pre.hljs) {
   position: relative;
-  background: var(--el-bg-color-page);
+  background: #ebedef;
   border: 1px solid var(--border-color);
   border-radius: 16px;
   margin: 2em 0;
@@ -457,12 +410,6 @@ watch(() => themeStore.theme, (newTheme) => {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* 代码块在暗色主题下使用深色背景 */
-[data-theme="dark"] .markdown-content :deep(pre.hljs) {
-  background: #1e1e1e;
-  border-color: #3a3a3a;
-}
-
 .markdown-content :deep(pre.hljs code) {
   font-family: 'SF Mono', 'Monaco', 'Consolas', 'Roboto Mono', monospace;
   font-size: 14px;
@@ -470,11 +417,17 @@ watch(() => themeStore.theme, (newTheme) => {
   background: transparent;
   padding: 0;
   border-radius: 0;
-  color: var(--text-color);
+  color: #24292f; /* 白天模式下使用深色文字 */
 }
 
-/* 暗色主题下的代码颜色 */
-[data-theme="dark"] .markdown-content :deep(pre.hljs code) {
+/* 代码块在暗色主题下使用深色背景 - 修改为使用动态类名 */
+.markdown-content.dark-theme :deep(pre.hljs) {
+  background: #1e1e1e;
+  border-color: #3a3a3a;
+}
+
+/* 暗色主题下的代码颜色 - 修改为使用动态类名 */
+.markdown-content.dark-theme :deep(pre.hljs code) {
   color: #e1e4e8;
 }
 
@@ -545,60 +498,49 @@ watch(() => themeStore.theme, (newTheme) => {
   text-align: left !important;
 }
 
-/* 修复表格样式以适配主题 */
-.markdown-content :deep(table) {
-  border-collapse: collapse;
-  width: 100%;
-  margin: 1.5em 0;
+/* 暗色主题下的表格特殊处理 - 修改为使用动态类名 */
+.markdown-content.dark-theme :deep(table) {
+  background-color: transparent;
+  border-color: #444;
+}
+
+.markdown-content.dark-theme :deep(thead) {
+  background-color: #2d2d2d;
+}
+
+.markdown-content.dark-theme :deep(th) {
+  background-color: #2d2d2d;
+  color: #e1e4e8;
+  border-color: #444;
+}
+
+.markdown-content.dark-theme :deep(td) {
+  color: #e1e4e8;
+  border-color: #444;
   background-color: transparent;
 }
 
-.markdown-content :deep(thead) {
-  background-color: var(--el-fill-color-light);
+.markdown-content.dark-theme :deep(tbody tr:nth-child(odd)) {
+  background-color: #202020;
 }
 
-.markdown-content :deep(th),
-.markdown-content :deep(td) {
-  border: 1px solid var(--border-color);
-  padding: 0.6em 1em;
-  color: var(--text-color);
-  text-align: left;
-  vertical-align: middle;
-}
-
-.markdown-content :deep(th) {
-  background-color: var(--el-fill-color-light);
-  font-weight: 600;
-}
-
-.markdown-content :deep(tbody tr:nth-child(odd)) {
-  background-color: transparent;
-}
-
-.markdown-content :deep(tbody tr:nth-child(even)) {
-  background-color: var(--el-fill-color-lighter);
-}
-
-.markdown-content :deep(tbody tr:hover) {
-  background-color: var(--el-fill-color-light);
-}
-
-/* 暗色主题下的表格特殊处理 */
-[data-theme="dark"] .markdown-content :deep(th) {
-  background-color: #3a3a3a;
-  color: #e1e4e8;
-}
-
-[data-theme="dark"] .markdown-content :deep(td) {
-  color: #e1e4e8;
-}
-
-[data-theme="dark"] .markdown-content :deep(tbody tr:nth-child(even)) {
+.markdown-content.dark-theme :deep(tbody tr:nth-child(even)) {
   background-color: #2a2a2a;
 }
 
-[data-theme="dark"] .markdown-content :deep(tbody tr:hover) {
-  background-color: #404040;
+.markdown-content.dark-theme :deep(tbody tr:hover) {
+  background-color: #303030;
+}
+
+/* 代码块在暗色主题下使用深色背景 - 修改为使用动态类名 */
+.markdown-content.dark-theme :deep(pre.hljs) {
+  background: #1e1e1e;
+  border-color: #3a3a3a;
+}
+
+/* 暗色主题下的代码颜色 - 修改为使用动态类名 */
+.markdown-content.dark-theme :deep(pre.hljs code) {
+  color: #e1e4e8;
 }
 
 /* 折叠元素 <details> 和 <summary> 样式适配 */
