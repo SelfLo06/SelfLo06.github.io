@@ -119,17 +119,6 @@ const md = new MarkdownIt({
   html: true,
   linkify: true,
   breaks: true,
-  // highlight: function (str, lang) {
-  //   if (lang && hljs.getLanguage(lang)) {
-  //     try {
-  //       return '<pre class="hljs"><code>' +
-  //         hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
-  //         '</code></pre>';
-  //     } catch (__) {}
-  //   }
-  //   return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
-  // }
-  // 修复highlight函数的catch块
   highlight: function (str, lang) {
     if (lang && hljs.getLanguage(lang)) {
       try {
