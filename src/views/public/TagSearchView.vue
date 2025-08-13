@@ -28,9 +28,9 @@
       </el-select>
 
       <!-- 在这里植入标签云  -->
-      <!-- 1. 新增一个“视口”容器，它负责创建滚动的窗口 -->
+      <!-- 1. 新增一个"视口"容器，它负责创建滚动的窗口 -->
       <div v-if="allTagsList.length > 0" class="tag-cloud-viewport">
-        <!-- 2. 原有的容器现在变成了滚动的“轨道” -->
+        <!-- 2. 原有的容器现在变成了滚动的"轨道" -->
         <div class="tag-cloud-track">
           <!--
             【关键】我们复制了一份完全相同的标签列表
@@ -86,8 +86,19 @@
             <el-pagination background layout="prev, pager, next" :total="pagination.total" v-model:current-page="pagination.pageNum" @current-change="handleCurrentChange" />
           </div>
         </div>
-        <!-- 无文章则显示空状态 -->
-        <el-empty v-else description="暂无满足所有已选标签的文章"></el-empty>
+
+        <!-- 当加载完成且没有搜索结果时，显示自定义空状态组件 -->
+        <div v-else class="empty-container" :class="{ 'dark-theme': themeStore.theme === 'dark' }">
+          <div class="empty-state">
+            <div class="magnifier">
+              <div class="magnifier-glass"></div>
+              <div class="magnifier-handle"></div>
+            </div>
+            <div class="empty-text">
+              <p>没有找到相关的标签，换个关键词试试吧~</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -97,6 +108,9 @@
 import { ref, onMounted, watch } from 'vue';
 import { useRoute, useRouter, RouterLink } from 'vue-router';
 import { getAllTags, getPublishedArticles } from '@/api/public';
+import { useThemeStore } from '@/stores/theme'
+
+const themeStore = useThemeStore()
 
 const route = useRoute();
 const router = useRouter();
@@ -236,6 +250,14 @@ watch(() => route.query.tagIds, (newTagIds) => {
 
 
 <style scoped>
+.tag-search-view {
+  --text-on-primary: white;
+}
+
+:global(html.dark) .tag-search-view {
+  --text-on-primary: white;
+}
+
 /* 搜索头部卡片 */
 .search-header-card {
   background-color: var(--card-bg-color);
@@ -265,15 +287,15 @@ watch(() => route.query.tagIds, (newTagIds) => {
   100% { transform: translateX(-50%); }
 }
 
-/* 标签云视口 */
+/* 标签云视口 - 修复渐变语法 */
 .tag-cloud-viewport {
   width: 100%;
   overflow: hidden;
   margin-top: 2rem;
   padding-top: 1.5rem;
   border-top: 1px solid var(--border-color);
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
-  mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
 }
 
 /* 标签云轨道 */
@@ -423,5 +445,155 @@ watch(() => route.query.tagIds, (newTagIds) => {
   display: flex;
   justify-content: center;
   margin-top: 2rem;
+}
+
+/* Element Plus 选择器的主题适配样式 */
+.tag-selector :deep(.el-select__wrapper) {
+  background-color: var(--card-bg-color) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-color) !important;
+}
+
+.tag-selector :deep(.el-select__wrapper:hover) {
+  border-color: var(--primary-color) !important;
+}
+
+.tag-selector :deep(.el-select__wrapper.is-focused) {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 1px var(--primary-color) inset !important;
+}
+
+.tag-selector :deep(.el-select__placeholder) {
+  color: var(--text-color-secondary) !important;
+}
+
+.tag-selector :deep(.el-select__input) {
+  color: var(--text-color) !important;
+}
+
+.tag-selector :deep(.el-tag) {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+  border-color: var(--primary-color) !important;
+}
+
+.tag-selector :deep(.el-tag .el-tag__close) {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.tag-selector :deep(.el-tag .el-tag__close:hover) {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+/* 下拉选项的主题适配 */
+:deep(.el-select-dropdown) {
+  background-color: var(--card-bg-color) !important;
+  border-color: var(--border-color) !important;
+}
+
+:deep(.el-select-dropdown .el-select-dropdown__item) {
+  color: var(--text-color) !important;
+  background-color: transparent !important;
+}
+
+:deep(.el-select-dropdown .el-select-dropdown__item:hover) {
+  background-color: rgba(128, 128, 128, 0.1) !important;
+}
+
+:deep(.el-select-dropdown .el-select-dropdown__item.is-selected) {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+}
+
+/* 自定义空状态容器 */
+.empty-container {
+  background-color: var(--card-bg-color);
+  border-radius: var(--border-radius-main);
+  box-shadow: var(--card-shadow);
+  padding: 3rem 2rem;
+  margin: 2rem 0;
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+/* 暗黑模式下的空状态容器 */
+.empty-container.dark-theme {
+  background-color: var(--card-bg-color);
+  border-color: var(--border-color);
+}
+
+/* 空状态内容 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+}
+
+/* 放大镜图标容器 */
+.magnifier {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 1.5rem;
+}
+
+/* 放大镜玻璃部分 */
+.magnifier-glass {
+  position: absolute;
+  top: 20px;
+  left: 30px;
+  width: 60px;
+  height: 60px;
+  border: 5px solid var(--text-color-secondary);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+/* 放大镜手柄部分 */
+.magnifier-handle {
+  position: absolute;
+  bottom: 20px;
+  right: 30px;
+  width: 5px;
+  height: 40px;
+  background-color: var(--text-color-secondary);
+  transform: rotate(-45deg);
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+/* 放大镜悬停效果 */
+.empty-state:hover .magnifier-glass {
+  border-color: var(--primary-color);
+  transform: scale(1.05);
+}
+
+.empty-state:hover .magnifier-handle {
+  background-color: var(--primary-color);
+  transform: rotate(-45deg) scale(1.05);
+}
+
+/* 空状态文字 */
+.empty-text {
+  max-width: 300px;
+}
+
+.empty-text p {
+  font-size: 1.1rem;
+  color: var(--text-color-secondary);
+  line-height: 1.6;
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+/* 确保动画效果在切换主题时平滑 */
+* {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: 0.3s;
+  transition-timing-function: ease;
 }
 </style>

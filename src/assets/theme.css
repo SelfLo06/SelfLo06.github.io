@@ -10,7 +10,7 @@
 
   --text-color: #4c4948;
   --text-color-secondary: #7c7978;
-  --card-bg-color: rgba(255, 255, 255, 0.85); /* 稍微增加不透明度，让毛玻璃效果更明显 */
+  --card-bg-color: rgba(255, 255, 255, 0.9); /* 稍微增加不透明度，让毛玻璃效果更明显 */
   --border-color: #e4e7ed;
 
   --card-shadow: 0 8px 16px -4px rgba(40, 40, 40, 0.1);
@@ -85,7 +85,7 @@ body::after {
 /* 亮色模式背景层 (::before) */
 body::before {
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)),
+    linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.4)),
     url('https://images.selflo06.xyz/background.jpg');
   opacity: 1; /* 默认可见 */
 }

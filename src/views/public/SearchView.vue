@@ -40,9 +40,17 @@
       </div>
     </div>
 
-    <!-- 当加载完成且没有文章时，显示空状态组件 -->
-    <div v-else class="empty-container">
-      <el-empty description="没有找到相关的文章，换个关键词试试吧~"></el-empty>
+    <!-- 当加载完成且没有文章时，显示自定义空状态组件 -->
+    <div v-else class="empty-container" :class="{ 'dark-theme': themeStore.theme === 'dark' }">
+      <div class="empty-state">
+        <div class="magnifier">
+          <div class="magnifier-glass"></div>
+          <div class="magnifier-handle"></div>
+        </div>
+        <div class="empty-text">
+          <p>没有找到相关的文章，换个关键词试试吧~</p>
+        </div>
+      </div>
     </div>
 
     <!-- 分页组件 -->
@@ -64,6 +72,9 @@
 import { ref, watch } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
 import { searchArticles as searchArticlesApi } from '@/api/public';
+import { useThemeStore } from '@/stores/theme'
+
+const themeStore = useThemeStore()
 
 const route = useRoute();
 
@@ -243,17 +254,93 @@ watch(
    gap: 0.4rem;
  }
 
- :global(html.dark) .el-empty :deep(.el-empty__image) {
-   /*
-    * 这是一个非常强大的 CSS 技巧，用于改变单色或灰色系 SVG 的颜色。
-    * 我们反转 SVG 的颜色 (白色变黑色)，然后再通过一系列滤镜
-    * 将其调整为我们需要的、与暗黑主题匹配的柔和灰色。
-   */
-   filter: invert(85%) sepia(10%) saturate(150%) hue-rotate(180deg) brightness(80%);
- }
 
  :global(html.dark) .el-empty :deep(.el-empty__description p) {
    /* 直接使用我们定义的文字颜色变量 */
    color: var(--text-color-secondary);
+ }
+
+ /* 自定义空状态容器 */
+ .empty-container {
+   background-color: var(--card-bg-color);
+   border-radius: var(--border-radius-main);
+   box-shadow: var(--card-shadow);
+   padding: 3rem 2rem;
+   margin: 2rem 0;
+   border: 1px solid var(--border-color);
+   transition: all 0.3s ease;
+ }
+
+ /* 暗黑模式下的空状态容器 */
+ .empty-container.dark-theme {
+   background-color: var(--card-bg-color);
+   border-color: var(--border-color);
+ }
+
+ /* 空状态内容 */
+ .empty-state {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   text-align: center;
+   padding: 2rem;
+ }
+
+ /* 放大镜图标容器 */
+ .magnifier {
+   position: relative;
+   width: 120px;
+   height: 120px;
+   margin-bottom: 1.5rem;
+ }
+
+ /* 放大镜玻璃部分 */
+ .magnifier-glass {
+   position: absolute;
+   top: 20px;
+   left: 30px;
+   width: 60px;
+   height: 60px;
+   border: 5px solid var(--text-color-secondary);
+   border-radius: 50%;
+   transition: all 0.3s ease;
+ }
+
+ /* 放大镜手柄部分 */
+ .magnifier-handle {
+   position: absolute;
+   bottom: 20px;
+   right: 30px;
+   width: 5px;
+   height: 40px;
+   background-color: var(--text-color-secondary);
+   transform: rotate(-45deg);
+   border-radius: 4px;
+   transition: all 0.3s ease;
+ }
+
+ /* 放大镜悬停效果 */
+ .empty-state:hover .magnifier-glass {
+   border-color: var(--primary-color);
+   transform: scale(1.05);
+ }
+
+ .empty-state:hover .magnifier-handle {
+   background-color: var(--primary-color);
+   transform: rotate(-45deg) scale(1.05);
+ }
+
+ /* 空状态文字 */
+ .empty-text {
+   max-width: 300px;
+ }
+
+ .empty-text p {
+   font-size: 1.1rem;
+   color: var(--text-color-secondary);
+   line-height: 1.6;
+   margin: 0;
+   transition: color 0.3s ease;
  }
  </style>
