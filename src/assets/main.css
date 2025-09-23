@@ -48,11 +48,6 @@ code {
   padding: 0.2em 0.4em;
 }
 
-pre {
-  position: relative;
-  z-index: 1;
-}
-
 
 /* 确保 Element Plus 对话框和消息框在最顶层 */
 .el-overlay {

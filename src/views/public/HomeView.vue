@@ -65,8 +65,8 @@
         background
         layout="prev, pager, next"
         :total="pagination.total"
-        v-model:current-page="pagination.pageNum"
-        v-model:page-size="pagination.pageSize"
+        :current-page="pagination.pageNum"
+        :page-size="pagination.pageSize"
         @current-change="handleCurrentChange"
       />
     </div>
