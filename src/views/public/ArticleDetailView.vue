@@ -592,6 +592,24 @@ watch(() => themeStore.theme, (newTheme) => {
   /* margin-left: 0; */ /* 确保没有意外的左外边距，或者根据需要调整 */
 }
 
+.markdown-content :deep(ul ul) {
+  list-style-type: circle; /* 恢复无序列表的圆点样式 */
+  padding-left: 2em; /* 添加左内边距以实现缩进 */
+  /* margin-left: 0; */ /* 确保没有意外的左外边距，或者根据需要调整 */
+}
+
+.markdown-content :deep(ul ul ul) {
+  list-style-type: disc; /* 恢复无序列表的圆点样式 */
+  padding-left: 2em; /* 添加左内边距以实现缩进 */
+  /* margin-left: 0; */ /* 确保没有意外的左外边距，或者根据需要调整 */
+}
+
+.markdown-content :deep(ul ul ul ul) {
+  list-style-type: circle; /* 恢复无序列表的圆点样式 */
+  padding-left: 2em; /* 添加左内边距以实现缩进 */
+  /* margin-left: 0; */ /* 确保没有意外的左外边距，或者根据需要调整 */
+}
+
 .markdown-content :deep(ol) {
   list-style-type: decimal; /* 恢复有序列表的数字样式 */
   padding-left: 2.5em; /* 添加左内边距以实现缩进 (有序列表通常需要更多空间来显示数字) */
