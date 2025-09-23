@@ -65,17 +65,17 @@
         background
         layout="prev, pager, next"
         :total="pagination.total"
-        :current-page="pagination.pageNum"
+        v-model:current-page="pagination.pageNum"
         :page-size="pagination.pageSize"
         @current-change="handleCurrentChange"
       />
     </div>
+
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, watch } from 'vue';
-import { RouterLink, useRoute } from 'vue-router';
 import { getPublishedArticles } from '@/api/public';
 import { useThemeStore } from '@/stores/theme'
 
