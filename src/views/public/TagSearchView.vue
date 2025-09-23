@@ -83,7 +83,7 @@
           </div>
           <!-- 分页 -->
           <div v-if="pagination.total > 0" class="pagination-container">
-            <el-pagination background layout="prev, pager, next" :total="pagination.total" v-model:current-page="pagination.pageNum" @current-change="handleCurrentChange" />
+            <el-pagination background layout="prev, pager, next" :total="pagination.total" v-model:current-page="pagination.page" @current-change="handleCurrentChange" />
           </div>
         </div>
 
@@ -123,7 +123,7 @@ const tagSearchLoading = ref(false);
 
 // 文章列表相关
 const articleList = ref([]);
-const pagination = ref({ pageNum: 1, pageSize: 10, total: 0 });
+const pagination = ref({ page: 1, pageSize: 10, total: 0 });
 const loading = ref(true);
 
 // --- 方法定义 ---
@@ -189,7 +189,7 @@ const fetchArticlesByTags = async (page = 1) => {
     if (res.code === 0 && res.data) {
       articleList.value = res.data.records;
       pagination.value.total = res.data.total;
-      pagination.value.pageNum = res.data.current;
+      pagination.value.page = res.data.current;
     }
   } catch (error) {
     console.error(`获取多标签文章列表失败:`, error);

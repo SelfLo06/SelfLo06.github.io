@@ -59,7 +59,7 @@
         background
         layout="prev, pager, next"
         :total="pagination.total"
-        v-model:current-page="pagination.pageNum"
+        v-model:current-page="pagination.page"
         v-model:page-size="pagination.pageSize"
         @current-change="handleCurrentChange"
       />
@@ -80,7 +80,7 @@ const route = useRoute();
 
 const articleList = ref([]);
 const pagination = ref({
-  pageNum: 1,
+  page: 1,
   pageSize: 10,
   total: 0
 });
@@ -105,7 +105,7 @@ const fetchSearchResults = async () => {
   try {
     const params = {
       keyword: keyword,
-      pageNum: pagination.value.pageNum,
+      page: pagination.value.page,
       pageSize: pagination.value.pageSize,
     };
 
@@ -129,7 +129,7 @@ const fetchSearchResults = async () => {
 
 // --- 分页处理函数保持不变，但要调用新函数 ---
 const handleCurrentChange = (newPage) => {
-  pagination.value.pageNum = newPage;
+  pagination.value.page = newPage;
   fetchSearchResults(); // 调用新函数
   window.scrollTo(0, 0);
 };
@@ -145,7 +145,7 @@ watch(
   () => route.query.keyword,
   (newKeyword, oldKeyword) => {
     if (newKeyword && newKeyword !== oldKeyword) {
-      pagination.value.pageNum = 1; // 重置到第一页
+      pagination.value.page = 1; // 重置到第一页
       fetchSearchResults();
     }
   },

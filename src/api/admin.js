@@ -8,7 +8,6 @@ import request from '@/utils/request.js'
  */
 export const getAdminArticles = (params) => {
   // 【修正】后台的所有查询都指向公共的 GET /article 接口
-  // 后端会根据Token判断是否为管理员，从而返回所有状态的文章
   return request.get('/article', { params });
 };
 

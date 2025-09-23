@@ -96,7 +96,7 @@
         background
         layout="total, sizes, prev, pager, next, jumper"
         :total="pagination.total"
-        v-model:current-page="pagination.pageNum"
+        v-model:current-page="pagination.page"
         v-model:page-size="pagination.pageSize"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -116,7 +116,7 @@ const router = useRouter();
 // --- 数据状态 ---
 const articleList = ref([]);
 const loading = ref(true);
-const pagination = ref({ pageNum: 1, pageSize: 10, total: 0 });
+const pagination = ref({ page: 1, pageSize: 10, total: 0 });
 const categoryOptions = ref([]);
 
 // 使用 reactive 来统一管理所有筛选条件
@@ -146,7 +146,7 @@ const fetchData = async () => {
     articleList.value = res.data.records;
     pagination.value.total = res.data.total;
     // 更新分页数据时，也使用后端返回的字段名
-    pagination.value.pageNum = res.data.current;
+    pagination.value.page = res.data.current;
   } catch (error) {
     console.error("获取文章列表失败:", error);
     ElMessage.error('数据加载失败，请稍后再试');
@@ -196,7 +196,7 @@ const handleDelete = async (id) => {
 };
 
 const handleSearch = () => {
-  pagination.value.pageNum = 1; // 搜索时回到第一页
+  pagination.value.page = 1; // 搜索时回到第一页
   fetchData();
 };
 
@@ -204,7 +204,7 @@ const handleReset = () => {
   filters.keyword = '';
   filters.categoryId = '';
   filters.status = '';
-  pagination.value.pageNum = 1;
+  pagination.value.page = 1;
   fetchData();
 };
 
@@ -214,7 +214,7 @@ const handleSizeChange = (size) => {
   fetchData();
 };
 const handleCurrentChange = (page) => {
-  pagination.value.pageNum = page;
+  pagination.value.page = page;
   fetchData();
 };
 

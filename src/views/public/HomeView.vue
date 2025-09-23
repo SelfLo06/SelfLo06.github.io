@@ -75,7 +75,7 @@
         background
         layout="prev, pager, next"
         :total="pagination.total"
-        v-model:current-page="pagination.pageNum"
+        v-model:current-page="pagination.page"
         :page-size="pagination.pageSize"
         @current-change="handleCurrentChange"
       />
@@ -107,7 +107,7 @@ const props = defineProps({
 
 const articleList = ref([]);
 const pagination = ref({
-  pageNum: 1,
+  page: 1,
   pageSize: 10,
   total: 0
 });
@@ -119,7 +119,7 @@ const fetchArticles = async () => {
   try {
     // 构造请求参数
     const params = {
-      pageNum: pagination.value.pageNum,
+      page: pagination.value.page,
       pageSize: pagination.value.pageSize
     };
 
@@ -154,7 +154,7 @@ const fetchArticles = async () => {
 // =====================================================
 
 const handleCurrentChange = (newPage) => {
-  pagination.value.pageNum = newPage;
+  pagination.value.page = newPage;
   fetchArticles();
   window.scrollTo(0, 0);
 };
@@ -175,11 +175,12 @@ watch(
     // 仅当 categoryId 或 tagId 确实发生变化时才重置并重新加载
     if (newCategoryId !== oldCategoryId || newTagId !== oldTagId) {
       // 重置到第一页
-      pagination.value.pageNum = 1;
+      pagination.value.page = 1;
       // 重新获取文章
       fetchArticles();
     // 滚动到顶部
     window.scrollTo(0, 0);
+    }
   }
 );
 // ========================================================
