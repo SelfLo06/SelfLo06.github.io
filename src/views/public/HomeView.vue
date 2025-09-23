@@ -6,7 +6,6 @@
     <div v-if="articleList.length > 0" class="article-grid">
       <div v-for="article in articleList" :key="article.id" class="article-card">
         <RouterLink :to="{ name: 'articleDetail', params: { id: article.id } }" class="card-link">
-
           <!-- 1. 封面图区域 -->
           <div class="card-cover">
             <!--
@@ -32,14 +31,21 @@
             <p class="card-summary">{{ article.summary || '暂无摘要...' }}</p>
 
             <div class="card-meta">
-              <span><i class="fa-regular fa-calendar-days"></i> {{ formatDate(article.createTime) }}</span>
-              <span v-if="article.categoryName"><i class="fa-regular fa-folder"></i> {{ article.categoryName }}</span>
-              <span v-if="article.wordCount"><i class="fa-regular fa-file-word"></i> 约 {{ article.wordCount }} 字</span>
+              <span
+                ><i class="fa-regular fa-calendar-days"></i>
+                {{ formatDate(article.createTime) }}</span
+              >
+              <span v-if="article.categoryName"
+                ><i class="fa-regular fa-folder"></i> {{ article.categoryName }}</span
+              >
+              <span v-if="article.wordCount"
+                ><i class="fa-regular fa-file-word"></i> 约 {{ article.wordCount }} 字</span
+              >
             </div>
             <div v-if="article.tags && article.tags.length" class="meta-tags-list">
-                <span v-for="tag in article.tags" :key="tag.id" class="card-tag">
-                  # {{ tag.name }}
-                </span>
+              <span v-for="tag in article.tags" :key="tag.id" class="card-tag">
+                # {{ tag.name }}
+              </span>
             </div>
           </div>
         </RouterLink>
@@ -47,7 +53,11 @@
     </div>
 
     <!-- 当加载完成且没有文章时，显示自定义空状态组件 -->
-    <div v-else-if="!loading" class="empty-container" :class="{ 'dark-theme': themeStore.theme === 'dark' }">
+    <div
+      v-else-if="!loading"
+      class="empty-container"
+      :class="{ 'dark-theme': themeStore.theme === 'dark' }"
+    >
       <div class="empty-state">
         <div class="magnifier">
           <div class="magnifier-glass"></div>
@@ -70,7 +80,6 @@
         @current-change="handleCurrentChange"
       />
     </div>
-
   </div>
 </template>
 
@@ -159,17 +168,16 @@ const formatDate = (isoString) => {
 // 当用户从一个分类文章列表页，跳转到另一个分类文章列表页时
 // HomeView 组件实例会被复用，onMounted 不会重新触发
 // 我们需要 watch props.categoryId 的变化来重新加载数据
+// ========== 【【【 4. 添加侦听器以响应路由变化 】】】 ==========
 watch(
-  // 同时侦听两个 prop
-  [() => props.categoryId, () => props.tagId],
+  () => [props.categoryId, props.tagId],
   ([newCategoryId, newTagId], [oldCategoryId, oldTagId]) => {
-    // 只要其中任意一个发生了变化，就重新加载数据
-    // （这里我们简化了判断逻辑，直接重新获取即可）
-
-    // 重置到第一页
-    pagination.value.pageNum = 1;
-    // 重新获取文章
-    fetchArticles();
+    // 仅当 categoryId 或 tagId 确实发生变化时才重置并重新加载
+    if (newCategoryId !== oldCategoryId || newTagId !== oldTagId) {
+      // 重置到第一页
+      pagination.value.pageNum = 1;
+      // 重新获取文章
+      fetchArticles();
     // 滚动到顶部
     window.scrollTo(0, 0);
   }
@@ -196,7 +204,9 @@ onMounted(() => {
   border-radius: var(--border-radius-main);
   box-shadow: var(--card-shadow);
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
 }
