@@ -76,21 +76,6 @@
         <ThemeToggle />
       </div>
     </div>
-    <!-- QQ弹窗 -->
-    <div v-if="showQQPopup" class="popup-overlay" @click="showQQPopup = false">
-      <div class="popup-container" @click.stop>
-        <div class="popup-content">不让加 <(▰˘◡˘▰)></div>
-        <button class="popup-close" @click="showQQPopup = false">关闭</button>
-      </div>
-    </div>
-
-    <!-- B站弹窗 -->
-    <div v-if="showBilibiliPopup" class="popup-overlay" @click="showBilibiliPopup = false">
-      <div class="popup-container" @click.stop>
-        <div class="popup-content">不让看 <(▰˘◡˘▰)></div>
-        <button class="popup-close" @click="showBilibiliPopup = false">关闭</button>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -410,52 +395,5 @@ onMounted(async () => {
 .social-github:hover {
   background-color: #24292E;
   color: white;
-}
-
-/* 弹窗样式 */
-.popup-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.popup-container {
-  background-color: var(--card-bg-color);
-  border-radius: var(--border-radius-main);
-  padding: 2rem;
-  box-shadow: var(--card-shadow);
-  max-width: 300px;
-  width: 100%;
-  text-align: center;
-  animation: popup-fade 0.3s ease;
-}
-
-.popup-content {
-  font-size: 1.8rem;
-  margin-bottom: 1.5rem;
-  color: var(--text-color);
-  font-weight: bold;
-}
-
-.popup-close {
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  padding: 0.5rem 1.5rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.2s ease;
-}
-
-.popup-close:hover {
-  opacity: 0.9;
 }
 </style>
