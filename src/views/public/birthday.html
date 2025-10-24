@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>祝姐姐生日快乐！</title>
+    <style>
+        /* --- CSS 样式 --- */
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #fdf2f8; /* 温馨的粉色背景 */
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column; /* 垂直布局 */
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden; /* 防止水平滚动 */
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            box-sizing: border-box;
+            margin-bottom: 30px; /* 和蛋糕分隔开 */
+        }
+
+        h1 {
+            color: #e91e63;
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .message {
+            font-size: 1.2em;
+            line-height: 1.6;
+            color: #555;
+            text-align: left;
+            margin-bottom: 30px;
+            animation: fadeInUp 1s ease-out 0.5s;
+            animation-fill-mode: backwards;
+        }
+
+        .signature {
+            font-size: 1.1em;
+            font-style: italic;
+            color: #e91e63;
+            text-align: right;
+            animation: fadeInUp 1s ease-out 1s;
+            animation-fill-mode: backwards;
+        }
+
+        /* 动画效果 (与之前相同) */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- 蛋糕和蜡烛的样式 --- */
+        .cake-wrapper {
+            position: relative;
+            width: 300px; /* 蛋糕总宽度 */
+            height: 250px; /* 蛋糕总高度，包含蜡烛 */
+            margin-top: 50px; /* 与上面的文字分隔 */
+            margin-bottom: 50px;
+            animation: bounceIn 1s ease-out 1.5s; /* 蛋糕弹入动画 */
+            animation-fill-mode: backwards;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.1); opacity: 1; }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+
+
+        .cake {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 250px; /* 蛋糕主体宽度 */
+            height: 150px; /* 蛋糕主体高度 */
+            background-color: #fce4ec; /* 蛋糕颜色 */
+            border-radius: 50% / 30px 30px 0 0; /* 顶部椭圆，底部平坦 */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1; /* 确保在蜡烛下面 */
+            cursor: pointer; /* 提示可点击 */
+        }
+        .cake::before { /* 蛋糕顶部奶油 */
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: -5%;
+            width: 110%;
+            height: 30px;
+            background-color: #fff;
+            border-radius: 50%;
+            box-shadow: inset 0 -3px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .candle-container {
+            position: absolute;
+            top: 20px; /* 蜡烛在蛋糕上方 */
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex; /* 允许多个蜡烛水平排列 */
+            gap: 15px; /* 蜡烛间距 */
+            z-index: 2; /* 确保在蛋糕上方 */
+        }
+
+        .candle {
+            width: 8px;
+            height: 40px;
+            background-color: #ffcc00; /* 蜡烛体颜色 */
+            border-radius: 2px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s ease-out; /* 鼠标悬停动画 */
+        }
+        .candle:hover {
+            transform: scale(1.1); /* 鼠标悬停稍微放大 */
+        }
+
+        .wick { /* 烛芯 */
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 8px;
+            background-color: #8b4513; /* 棕色 */
+            border-radius: 1px;
+        }
+
+        .flame { /* 火焰 */
+            position: absolute;
+            top: -20px; /* 火焰位置 */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 12px;
+            height: 18px;
+            background-color: #ffdd00; /* 黄色火焰 */
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; /* 火焰形状 */
+            box-shadow: 0 0 8px 3px rgba(255, 221, 0, 0.7); /* 发光效果 */
+            opacity: 0; /* 默认隐藏 */
+            transition: opacity 0.3s ease-in-out; /* 渐变显示/隐藏 */
+            animation: flicker 0.5s infinite alternate; /* 闪烁动画 */
+        }
+        /* 蜡烛点亮时火焰显示 */
+        .candle.lit .flame {
+            opacity: 1;
+        }
+
+        @keyframes flicker {
+            0% { transform: translateX(-50%) scaleY(1); box-shadow: 0 0 8px 3px rgba(255, 221, 0, 0.7); }
+            50% { transform: translateX(-50%) scaleY(0.9); box-shadow: 0 0 10px 4px rgba(255, 221, 0, 0.8); }
+            100% { transform: translateX(-50%) scaleY(1); box-shadow: 0 0 8px 3px rgba(255, 221, 0, 0.7); }
+        }
+
+        /* 隐藏祝福语 */
+        .hidden-message {
+            margin-top: 20px;
+            font-size: 1.1em;
+            color: #e91e63;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+        .hidden-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>亲爱的 sister：生日快乐！ 🎂🎉</h1>
+
+    <p class="message">
+        嗨，姐姐！<br><br>
+
+        生日快乐！<br><br>
+
+        希望你喜欢这个小小的惊喜！
+    </p>
+
+    <p class="signature">
+        爱你的弟弟 <br>
+        2025年10月24日
+    </p>
+</div>
+
+<div class="cake-wrapper">
+    <div class="candle-container">
+        <div class="candle" id="candle1">
+            <div class="wick"></div>
+            <div class="flame"></div>
+        </div>
+        <div class="candle" id="candle2">
+            <div class="wick"></div>
+            <div class="flame"></div>
+        </div>
+        <div class="candle" id="candle3">
+            <div class="wick"></div>
+            <div class="flame"></div>
+        </div>
+    </div>
+    <div class="cake"></div>
+</div>
+
+<div class="hidden-message" id="hiddenMessage">
+    点击蜡烛可以点亮或熄灭哦！
+</div>
+
+<script>
+    // --- JavaScript 代码 ---
+
+    // 获取所有蜡烛元素
+    const candles = document.querySelectorAll('.candle');
+    // 获取隐藏的祝福语元素
+    const hiddenMessage = document.getElementById('hiddenMessage');
+    // 获取蛋糕元素 (用于点击后显示祝福语)
+    const cake = document.querySelector('.cake');
+
+    // 默认状态：所有蜡烛都点亮 (如果希望默认熄灭，移除 .lit 类即可)
+    candles.forEach(candle => {
+        candle.classList.add('lit');
+    });
+
+    // 监听每个蜡烛的点击事件
+    candles.forEach(candle => {
+        candle.addEventListener('click', () => {
+            // 切换 'lit' 类，从而切换火焰的显示/隐藏
+            candle.classList.toggle('lit');
+            // 显示提示信息
+            hiddenMessage.textContent = '蜡烛点亮/熄灭成功！';
+            hiddenMessage.classList.add('show');
+            setTimeout(() => {
+                hiddenMessage.classList.remove('show');
+            }, 2000); // 2秒后隐藏
+        });
+    });
+
+    // 监听蛋糕的点击事件 (可以用来做更多互动)
+    cake.addEventListener('click', () => {
+        // 当点击蛋糕时，可以显示额外的祝福语或者一个小的动画
+        let allLit = true;
+        candles.forEach(candle => {
+            if (!candle.classList.contains('lit')) {
+                allLit = false;
+            }
+        });
+
+        if (allLit) {
+            hiddenMessage.textContent = '所有蜡烛都点亮了！许个愿吧！';
+        } else {
+            hiddenMessage.textContent = '蛋糕好甜呀！再点点蜡烛试试看？';
+        }
+        hiddenMessage.classList.add('show');
+        setTimeout(() => {
+            hiddenMessage.classList.remove('show');
+        }, 3000); // 3秒后隐藏
+    });
+
+</script>
+</body>
+</html>
