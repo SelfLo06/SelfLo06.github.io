@@ -1,1 +1,0 @@
-import{Y as e}from"./index-D643oS84.js";const r=t=>e.get("/article",{params:t}),n=t=>e.delete(`/article/${t}`),g=()=>e.get("/category"),c=t=>e.post("/tags",t),d=(t,a)=>e.put(`/tags/${t}`,a),o=t=>e.delete(`/tags/${t}`),i=()=>e.get("/tags");export{g as a,i as b,o as c,n as d,c as e,r as g,d as u};
