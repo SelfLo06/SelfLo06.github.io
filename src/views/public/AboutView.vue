@@ -11,6 +11,13 @@
       :class="{ 'dark-theme': themeStore.theme === 'dark' }"
       v-html="aboutContentHtml"
     ></div>
+    <!-- 新增：单独的友链区域 -->
+    <div class="friend-links-section" :class="{ 'dark-theme': themeStore.theme === 'dark' }">
+      <span class="label">友链：</span>
+      <a href="https://phenol-cat.github.io/homepage/" target="_blank" class="friend-link">
+        phenol-cat
+      </a>
+    </div>
   </div>
 </template>
 
@@ -222,5 +229,36 @@ const aboutContentHtml = computed(() => {
 
 .content.dark-theme :deep(pre.hljs code) {
   color: #e1e4e8;
+}
+
+/* --- 新增：底部友链样式 --- */
+.friend-links-section {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--border-color); /*以此分割线分开上方正文 */
+  font-size: 1.05rem;
+  color: var(--text-color);
+}
+
+.friend-links-section .label {
+  font-weight: 600;
+  margin-right: 0.5rem;
+}
+
+.friend-links-section .friend-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  border-bottom: 1px dotted currentColor;
+  transition: all 0.3s;
+}
+
+.friend-links-section .friend-link:hover {
+  opacity: 0.8;
+  border-bottom-style: solid;
+}
+
+/* --- 关键点：暗色模式下的颜色修复 --- */
+.friend-links-section.dark-theme .friend-link {
+  color: #58a6ff; /* 亮蓝色，确保在这个背景下能看清 */
 }
 </style>
