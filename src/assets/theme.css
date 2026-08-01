@@ -86,7 +86,7 @@ body::after {
 body::before {
   background-image:
     linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.4)),
-    url('https://images.selflo06.xyz/background.jpg');
+    url('https://images.selflo06.com/background.jpg');
   opacity: 1; /* 默认可见 */
 }
 
@@ -95,7 +95,7 @@ body::after {
   background-image:
     /* 暗色模式的蒙版，可以是一个更深的半透明色 */
     linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
-    url('https://images.selflo06.xyz/background-dark.jpg');
+    url('https://images.selflo06.com/background-dark.jpg');
   opacity: 0; /* 默认不可见 */
 }
 
